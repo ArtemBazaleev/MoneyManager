@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#EA9EDF</color>
+    <color name="colorPrimaryDark">#B2464646</color>
+    <color name="colorAccent">#8E86DB</color>
+    
+    <color name="colorGradientStart">#EA9EDF</color>
+    <color name="colorGradientEnd">#8E86DB</color>
+
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorDarkText">#263238</color>
+    <color name="colorLightGray">#ECECEC</color>
+    <color name="colorGreen">#63B666</color>
+    <color name="black_overlay_bnv">#B2464646</color>
+
+
+    <color name="colorRed">#F4511E</color>
+    <color name="colorNote">#FFEDAA</color>
+
+    <color name="color_bordered_text">#54000000</color>
+
+    <color name="colorLightYellow">#FFF59D</color>
+    <color name="colorLightGreen">#C5E1A5</color>
+    <color name="colorLightRed">#EF9A9A</color>
+</resources>

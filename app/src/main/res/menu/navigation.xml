@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/navigation_events"
+        android:icon="@drawable/ic_event"
+        android:title="События"  />
+    <item
+        android:id="@+id/navigation_goals"
+        android:icon="@drawable/ic_checked_box"
+        android:title="Цели" />
+    <item
+        android:id="@+id/navigation_main"
+        android:title="" />
+    <item
+        android:id="@+id/navigation_statistics"
+        android:title="Статистика"
+        android:icon="@drawable/ic_stat"/>
+
+    <item android:id="@+id/navigation_more"
+        android:icon="@drawable/ic_more"
+        android:title="Еще"/>
+</menu>

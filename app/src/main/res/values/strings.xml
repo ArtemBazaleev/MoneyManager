@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">MoneyManager</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="my_goals">Мои цели</string>
+
+    <string name="action_today">Сегодня</string>
+    <string name="action_cancel">Отмена</string>
+    <string name="action_close">Закрыть</string>
+    <string name="action_select">Выбрать</string>
+
+    <string name="prime_date_picker_selected_day">Выбранный день</string>
+    <string name="prime_date_picker_from">С</string>
+    <string name="prime_date_picker_to">До</string>
+    <string name="income_two_dots">Доход:</string>
+    <string name="outcome_two_dots">Расход:</string>
+    <string name="january">Январь</string>
+    <string name="february">Февраль</string>
+    <string name="march">Март</string>
+    <string name="april">Апрель</string>
+    <string name="june">Июнь</string>
+    <string name="july">Июль</string>
+    <string name="august">Август</string>
+    <string name="september">Сентябрь</string>
+    <string name="october">Октябрь</string>
+    <string name="november">Ноябрь</string>
+    <string name="december">Декабрь</string>
+    <string name="may">Май</string>
+    <string name="toolbar_new_goal">Новая цель</string>
+</resources>
