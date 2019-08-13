@@ -14,4 +14,13 @@ import io.reactivex.Flowable;
 public interface DbIconInteraction {
     @Query("SELECT * FROM dbicon")
     Flowable<List<DbIcon>> getAllIcons();
+
+    @Query("SELECT * FROM dbicon WHERE iconName = :name")
+    DbIcon getIconByName(String name);
+
+    @Insert
+    void insertData(DbIcon icon);
+
+    @Insert
+    void insertData(List<DbIcon> icons);
 }

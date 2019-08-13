@@ -14,10 +14,18 @@ public class DbCategory {
 
     @PrimaryKey(autoGenerate = true)
     public int categoryId;
-    public int categoryName;
-    public double isIncome;
+    public String categoryName;
+    public int isIncome;
     @Embedded
     public DbIcon drawableIcon;
 
+    public DbCategory(String categoryName, int isIncome, DbIcon drawableIcon) {
+        this.categoryName = categoryName;
+        this.isIncome = isIncome;
+        this.drawableIcon = drawableIcon;
+    }
 
+    public DbCategory() {
+
+    }
 }

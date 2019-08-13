@@ -1,5 +1,6 @@
 package com.example.moneymanager.model.dbModel;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -16,16 +17,17 @@ public class DbTransaction {
 //    public static final String dbSum = "sum";
 
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "transaction_id")
     public int transactionId;
     public String note;
     public String image;
     public long date;
-    @Embedded(prefix = "type_")
+    @Embedded(prefix = "category_")
     public DbCategory transactionCategoryID;
-    @Embedded(prefix = "type_")
+    @Embedded(prefix = "account_")
     public DbAccount transactionAccountID;
     public double sum;
-    @Embedded(prefix = "type_")
+    @Embedded(prefix = "icon_")
     public DbIcon transactionIcon;
 
 }

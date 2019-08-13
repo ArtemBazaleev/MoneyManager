@@ -20,6 +20,9 @@ public interface DbCategoryInteraction {
     @Insert
     void addCategory(DbCategory category);
 
+    @Insert
+    void addCategory(List<DbCategory> categories);
+
     @Delete
     void deleteCategory(DbCategory category);
 }

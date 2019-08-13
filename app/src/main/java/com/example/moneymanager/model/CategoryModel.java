@@ -1,9 +1,13 @@
 package com.example.moneymanager.model;
 
+import com.example.moneymanager.model.dbModel.DbCategory;
+
 public class CategoryModel {
     private int color;
     private int tintColor;
+    private String icon;
     private String name;
+    private boolean selected = false;
 
     public CategoryModel(int color , String name, int tintColor) {
         this.color = color;
@@ -12,6 +16,11 @@ public class CategoryModel {
     }
 
     public CategoryModel() {
+    }
+
+    public CategoryModel(DbCategory i) {
+        icon = i.drawableIcon.drawableIcon;
+        name = i.categoryName;
     }
 
     public int getColor() {
@@ -36,5 +45,21 @@ public class CategoryModel {
 
     public void setTintColor(int tintColor) {
         this.tintColor = tintColor;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public String getIconId() {
+        return icon;
+    }
+
+    public void setIconId(String iconId) {
+        this.icon = iconId;
     }
 }

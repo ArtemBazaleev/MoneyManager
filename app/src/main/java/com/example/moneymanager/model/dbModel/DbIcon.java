@@ -1,5 +1,6 @@
 package com.example.moneymanager.model.dbModel;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -10,8 +11,16 @@ public class DbIcon {
 //    public static final String dbDrawable = "drawableIcon";
 //    public static final String dbName = "name";
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "icon_id")
     public int iconId;
-    public int drawableIcon;
-    public int iconName;
+    public String drawableIcon;
+    public String iconName;
 
+    public DbIcon(String drawableIcon, String iconName) {
+        this.drawableIcon = drawableIcon;
+        this.iconName = iconName;
+    }
+
+    public DbIcon() {
+    }
 }
