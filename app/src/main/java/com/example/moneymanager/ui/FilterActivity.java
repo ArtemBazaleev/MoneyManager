@@ -1,7 +1,6 @@
 package com.example.moneymanager.ui;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,10 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,16 +25,13 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.moneymanager.App;
 import com.example.moneymanager.R;
 import com.example.moneymanager.adapters.AccountAdapter;
-import com.example.moneymanager.adapters.CategoryAdapter;
 import com.example.moneymanager.model.AccountModel;
 import com.example.moneymanager.model.CategoryModel;
-import com.example.moneymanager.presentation.FilterActivityPresenter;
-import com.example.moneymanager.presentation.FilterActivityView;
+import com.example.moneymanager.presentation.presenter.FilterActivityPresenter;
+import com.example.moneymanager.presentation.view.FilterActivityView;
 import com.example.moneymanager.utils.Utility;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -1,4 +1,4 @@
-package com.example.moneymanager.presentation;
+package com.example.moneymanager.presentation.presenter;
 
 import com.aminography.primecalendar.PrimeCalendar;
 import com.arellomobile.mvp.InjectViewState;
@@ -9,6 +9,7 @@ import com.example.moneymanager.model.AccountModel;
 import com.example.moneymanager.model.CategoryModel;
 import com.example.moneymanager.model.FilterModel;
 import com.example.moneymanager.model.dbModel.DbAccount;
+import com.example.moneymanager.presentation.view.FilterActivityView;
 import com.example.moneymanager.ui.BottomSheetCategoryFragment;
 
 import java.util.ArrayList;

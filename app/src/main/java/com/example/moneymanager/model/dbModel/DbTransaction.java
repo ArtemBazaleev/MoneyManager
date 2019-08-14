@@ -29,5 +29,7 @@ public class DbTransaction {
     public double sum;
     @Embedded(prefix = "icon_")
     public DbIcon transactionIcon;
+    public int isIncome;
+
 
 }

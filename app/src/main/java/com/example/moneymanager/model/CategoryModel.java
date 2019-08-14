@@ -8,6 +8,7 @@ public class CategoryModel {
     private String icon;
     private String name;
     private boolean selected = false;
+    private DbCategory category;
 
     public CategoryModel(int color , String name, int tintColor) {
         this.color = color;
@@ -21,6 +22,7 @@ public class CategoryModel {
     public CategoryModel(DbCategory i) {
         icon = i.drawableIcon.drawableIcon;
         name = i.categoryName;
+        category = i;
     }
 
     public int getColor() {
@@ -61,5 +63,13 @@ public class CategoryModel {
 
     public void setIconId(String iconId) {
         this.icon = iconId;
+    }
+
+    public DbCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(DbCategory category) {
+        this.category = category;
     }
 }

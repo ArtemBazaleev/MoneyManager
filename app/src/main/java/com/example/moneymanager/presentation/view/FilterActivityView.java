@@ -1,4 +1,4 @@
-package com.example.moneymanager.presentation;
+package com.example.moneymanager.presentation.view;
 
 import com.arellomobile.mvp.MvpView;
 import com.example.moneymanager.model.AccountModel;

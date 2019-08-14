@@ -6,6 +6,7 @@ public class AccountModel {
     private boolean selected = false;
     private String name;
     private String icon;
+    private DbAccount account;
 
     public String getName() {
         return name;
@@ -26,6 +27,7 @@ public class AccountModel {
     public AccountModel(DbAccount account) {
         name = account.accountName;
         icon = account.drawableIcon.drawableIcon;
+        this.account = account;
     }
 
     public AccountModel() {
@@ -37,5 +39,13 @@ public class AccountModel {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public DbAccount getAccount() {
+        return account;
+    }
+
+    public void setAccount(DbAccount account) {
+        this.account = account;
     }
 }
