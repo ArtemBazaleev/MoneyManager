@@ -9,13 +9,21 @@ import java.util.List;
 public interface FilterActivityView extends MvpView {
     void showToastyMessage(String message);
 
-    void initCategory(List<CategoryModel> categories);
-
     void initAccount(List<AccountModel> accounts);
-
-    void setSelectedCategory(CategoryModel category);
 
     void setSelectedAccount(AccountModel account);
 
     void showDateTimePicker();
+
+    void showCategories(String mode);
+
+    void setEnabledCategory(boolean enabled);
+
+    void setCategory(CategoryModel model);
+
+    void setFromToDate(String from, String to);
+
+    void clearCheck();
+
+    void setEnabledDateLayout(boolean enabledDateLayout);
 }

@@ -24,10 +24,11 @@ public class App extends Application {
             @Override
             public void onCreate(@NonNull SupportSQLiteDatabase db) {
                 Executors.newSingleThreadScheduledExecutor().execute(() -> {
-                    getDatabase().dbIconInteraction()
-                            .insertData(Utility.getIcons());
-                    getDatabase().dbCategoryInteraction()
-                            .addCategory(Utility.getCategories(getDatabase().dbIconInteraction()));
+                    Utility.fillDatabase(getDatabase());
+//                    getDatabase().dbIconInteraction()
+//                            .insertData(Utility.getIcons());
+//                    getDatabase().dbCategoryInteraction()
+//                            .addCategory(Utility.getCategories(getDatabase().dbIconInteraction()));
                 });
 
             }

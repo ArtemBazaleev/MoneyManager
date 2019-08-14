@@ -13,8 +13,14 @@ public class DbAccount {
     @PrimaryKey(autoGenerate = true)
     public int accountId;
     public String accountName;
-
     @Embedded
     public DbIcon drawableIcon;
 
+    public DbAccount() {
+    }
+
+    public DbAccount(String accountName, DbIcon drawableIcon) {
+        this.accountName = accountName;
+        this.drawableIcon = drawableIcon;
+    }
 }

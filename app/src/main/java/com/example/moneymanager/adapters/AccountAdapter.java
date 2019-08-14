@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -11,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moneymanager.R;
 import com.example.moneymanager.model.AccountModel;
+import com.example.moneymanager.utils.Utility;
 
 import java.util.List;
 
@@ -83,10 +86,14 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         AccountModel model;
-        public ViewHolder(@NonNull View itemView) {
+        ImageView img;
+        TextView txt;
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.card_account);
             cardView.setOnClickListener(this::onClicked);
+            img = itemView.findViewById(R.id.imageView3);
+            txt = itemView.findViewById(R.id.textView16);
         }
 
         private void onClicked(View view) {
@@ -96,9 +103,10 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
 
         public void bind(AccountModel accountModel) {
             model = accountModel;
-            if (model.isSelected()) {
+            img.setImageDrawable(mContext.getResources().getDrawable(Utility.getResId(model.getIcon(), R.drawable.class)));
+            txt.setText(model.getName());
+            if (model.isSelected())
                 cardView.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorLightBlue));
-            }
             else cardView.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorWhite));
         }
     }

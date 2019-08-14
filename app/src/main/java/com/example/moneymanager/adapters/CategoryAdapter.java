@@ -94,7 +94,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         ImageView img;
         TextView txt;
         CategoryModel model;
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.card_category);
             img = itemView.findViewById(R.id.imageView3);

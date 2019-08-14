@@ -21,6 +21,9 @@ public interface DbAccountInteraction {
     @Insert
     void addAccount(DbAccount accountModel);
 
+    @Insert
+    void addAccount(List<DbAccount> accounts);
+
     @Delete
     void deleteAccount(DbAccount accountModel);
 }

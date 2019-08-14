@@ -24,7 +24,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-// TODO: 2019-08-13 add moxy
 public class BottomSheetImageFragment extends BottomSheetDialogFragment {
 
     @BindView(R.id.recycler_account) RecyclerView recyclerView;

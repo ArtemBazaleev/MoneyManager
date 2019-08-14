@@ -17,6 +17,12 @@ public interface DbCategoryInteraction {
     @Query("SELECT * FROM dbcategory")
     Flowable<List<DbCategory>> getAllCategories();
 
+    @Query("SELECT * FROM dbcategory WHERE isIncome = 0")
+    Flowable<List<DbCategory>> getAllOutComeCategories();
+
+    @Query("SELECT * FROM dbcategory WHERE isIncome = 1")
+    Flowable<List<DbCategory>> getAllInComeCategories();
+
     @Insert
     void addCategory(DbCategory category);
 

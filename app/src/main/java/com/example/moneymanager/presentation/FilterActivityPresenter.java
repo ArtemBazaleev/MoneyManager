@@ -1,17 +1,17 @@
 package com.example.moneymanager.presentation;
 
+import com.aminography.primecalendar.PrimeCalendar;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.moneymanager.interfaces.db.DbAccountInteraction;
-import com.example.moneymanager.interfaces.db.DbAccountInteraction_Impl;
 import com.example.moneymanager.interfaces.db.DbCategoryInteraction;
 import com.example.moneymanager.model.AccountModel;
 import com.example.moneymanager.model.CategoryModel;
 import com.example.moneymanager.model.FilterModel;
-import com.example.moneymanager.model.dbModel.DbCategory;
+import com.example.moneymanager.model.dbModel.DbAccount;
+import com.example.moneymanager.ui.BottomSheetCategoryFragment;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -32,7 +32,8 @@ public class FilterActivityPresenter extends MvpPresenter<FilterActivityView> {
 
     public void onCategoryClicked(CategoryModel category){
         filter.setCategory(category);
-        getViewState().setSelectedCategory(category);
+        getViewState().setEnabledCategory(true);
+        getViewState().setCategory(category);
     }
 
     public void onAccountClicked(AccountModel account){
@@ -42,32 +43,78 @@ public class FilterActivityPresenter extends MvpPresenter<FilterActivityView> {
 
     public void onCreate(){
         loadAccount();
-        loadCategories();
-    }
-
-    private void loadCategories() {
-      Disposable d = categoryInteraction.getAllCategories()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(dbCategories -> {
-                    List<CategoryModel> models = new LinkedList<>();
-                    for (DbCategory i: dbCategories)
-                        models.add(new CategoryModel(i));
-                    getViewState().initCategory(models);
-                }, throwable -> {
-
-                });
-
     }
 
     private void loadAccount() {
-        List<AccountModel> models = new ArrayList<>();
-        for (int i=0; i<10; i++)
-            models.add(new AccountModel());
-        getViewState().initAccount(models);
+        Disposable d = accountInteraction.getAllAccounts()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(accounts -> {
+                    List<AccountModel> models = new ArrayList<>();
+                    for (DbAccount i:accounts)
+                        models.add(new AccountModel(i));
+                    getViewState().initAccount(models);
+
+                }, throwable -> {
+
+                });
     }
 
     public void onSelectDate() {
         getViewState().showDateTimePicker();
+    }
+
+    public void showCategoryClicked() {
+        if (filter.getIncome() == null)
+            getViewState().showCategories(BottomSheetCategoryFragment.MODE_ALL);
+        else if (filter.getIncome())
+            getViewState().showCategories(BottomSheetCategoryFragment.MODE_INCOME);
+        else getViewState().showCategories(BottomSheetCategoryFragment.MODE_OUTCOME);
+
+    }
+
+    public void onDelCategoryClicked() {
+        filter.setCategory(null);
+        getViewState().setEnabledCategory(false);
+    }
+
+    public void onRangeDaysPicked(PrimeCalendar startDay, PrimeCalendar endDay) {
+        filter.setFromDate(startDay.getTimeInMillis());
+        filter.setToDate(endDay.getTimeInMillis());
+        getViewState().setFromToDate(
+                startDay.getShortDateString().replace("/", "."),
+                endDay.getShortDateString().replace("/", ".")
+        );
+        getViewState().setEnabledDateLayout(true);
+    }
+
+    public void onIncome() {
+        filter.setIncome(true);
+        getViewState().setEnabledCategory(false);
+    }
+
+    public void onOutCome() {
+        filter.setIncome(false);
+        getViewState().setEnabledCategory(false);
+    }
+
+    public void clearFilter() {
+        filter = new FilterModel();
+        getViewState().setEnabledCategory(false);
+        getViewState().setSelectedAccount(new AccountModel()); //очистка выделенного элемента
+        getViewState().clearCheck();
+        getViewState().setEnabledDateLayout(false);
+    }
+
+    public void onDelDateClicked() {
+        filter.setFromDate(null);
+        filter.setToDate(null);
+        getViewState().setEnabledDateLayout(false);
+    }
+
+    public void onIncomeAndOutCome() {
+        getViewState().clearCheck();
+        filter.setIncome(null);
+        getViewState().setEnabledCategory(false);
     }
 }

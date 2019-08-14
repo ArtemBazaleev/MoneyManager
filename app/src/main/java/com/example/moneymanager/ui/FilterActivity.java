@@ -8,7 +8,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +33,7 @@ import com.example.moneymanager.model.AccountModel;
 import com.example.moneymanager.model.CategoryModel;
 import com.example.moneymanager.presentation.FilterActivityPresenter;
 import com.example.moneymanager.presentation.FilterActivityView;
+import com.example.moneymanager.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,15 +43,25 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FilterActivity extends MvpAppCompatActivity implements FilterActivityView {
+    public static final String TAG = "FilterActivity";
 
-    @BindView(R.id.filter_category) RecyclerView recyclerCategoryFilter;
+    @BindView(R.id.filter_category) ConstraintLayout category;
     @BindView(R.id.select_date_constraint) ConstraintLayout selectDate;
     @BindView(R.id.textView_to_date) TextView toDate;
     @BindView(R.id.textView_from_date) TextView fromDate;
     @BindView(R.id.recycler_account) RecyclerView recyclerAccount;
+    @BindView(R.id.constraintLayout6) ConstraintLayout categoryBtn;
+    @BindView(R.id.imageView3) ImageView categoryImage;
+    @BindView(R.id.textView16) TextView categoryText;
+    @BindView(R.id.imageView11) ImageView delCategory;
+    @BindView(R.id.radioGroup) RadioGroup radioGroup;
+    @BindView(R.id.clearFilterBtn) ConstraintLayout clearFilterBtn;
+    @BindView(R.id.constraintLayout7) ConstraintLayout dateLayout;
+    @BindView(R.id.imageView13) ImageView delDateBtn;
     private PrimeDatePickerBottomSheet datePicker;
+    private BottomSheetCategoryFragment categoryFragment;
     private AccountAdapter accountAdapter;
-    private CategoryAdapter categoryAdapter;
+
 
     @InjectPresenter
     FilterActivityPresenter presenter;
@@ -70,10 +84,8 @@ public class FilterActivity extends MvpAppCompatActivity implements FilterActivi
         presenter.onCreate();
     }
 
-    //Fake init
     private void init() {
-
-        CalendarType calendarType = CalendarType.CIVIL; //use type that suits your use case
+        CalendarType calendarType = CalendarType.CIVIL;
         PrimeCalendar today = CalendarFactory.newInstance(calendarType);
         datePicker = PrimeDatePickerBottomSheet.newInstance(
                 today,
@@ -83,43 +95,34 @@ public class FilterActivity extends MvpAppCompatActivity implements FilterActivi
                 null,
                 new CivilCalendar(),
                 new CivilCalendar(),
-                "fonts/open_sans_ligh.ttf" // can be null
+                "fonts/open_sans_ligh.ttf"
         );
 
+        categoryBtn.setOnClickListener(v-> presenter.showCategoryClicked());
+        delCategory.setOnClickListener(v-> presenter.onDelCategoryClicked());
+        clearFilterBtn.setOnClickListener(v-> presenter.clearFilter());
+        delDateBtn.setOnClickListener(v->presenter.onDelDateClicked());
         datePicker.setOnDateSetListener(new PrimeDatePickerBottomSheet.OnDayPickedListener() {
-
             @Override
             public void onSingleDayPicked(@NonNull PrimeCalendar singleDay) {
             }
 
             @Override
             public void onRangeDaysPicked(@NonNull PrimeCalendar startDay, @NonNull PrimeCalendar endDay) {
-                fromDate.setText(String.format("c %s", startDay.getShortDateString().replace("/", ".")));
-                toDate.setText(String.format("до %s", endDay.getShortDateString().replace("/", ".")));
+                presenter.onRangeDaysPicked(startDay, endDay);
             }
         });
 
         selectDate.setOnClickListener(l->presenter.onSelectDate());
+        radioGroup.setOnCheckedChangeListener(checkedChangeListener);
+
 
     }
 
-    private void showDatePicker() {
-        datePicker.show(getSupportFragmentManager());
-    }
     //MVP methods
     @Override
     public void showToastyMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void initCategory(List<CategoryModel> categories) {
-        categoryAdapter = new CategoryAdapter(categories, this);
-        categoryAdapter.setmListener(presenter::onCategoryClicked);
-        recyclerCategoryFilter.setAdapter(categoryAdapter);
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        manager.setOrientation(RecyclerView.HORIZONTAL);
-        recyclerCategoryFilter.setLayoutManager(manager);
     }
 
     @Override
@@ -133,11 +136,6 @@ public class FilterActivity extends MvpAppCompatActivity implements FilterActivi
     }
 
     @Override
-    public void setSelectedCategory(CategoryModel category) {
-        categoryAdapter.setSelected(category);
-    }
-
-    @Override
     public void setSelectedAccount(AccountModel account) {
         accountAdapter.setSelected(account);
     }
@@ -146,4 +144,60 @@ public class FilterActivity extends MvpAppCompatActivity implements FilterActivi
     public void showDateTimePicker() {
         datePicker.show(getSupportFragmentManager());
     }
+
+    @Override
+    public void showCategories(String mode) {
+        categoryFragment = BottomSheetCategoryFragment.newInstance(mode);
+        categoryFragment.setmListener(presenter::onCategoryClicked);
+        this.categoryFragment.show(getSupportFragmentManager(),"category");
+    }
+
+    @Override
+    public void setEnabledCategory(boolean enabled) {
+        if (enabled)
+            category.setVisibility(View.VISIBLE);
+        else category.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setCategory(CategoryModel model) {
+        categoryText.setText(model.getName());
+        categoryImage.setImageDrawable(
+                getResources().getDrawable(Utility.getResId(model.getIconId(), R.drawable.class))
+        );
+    }
+
+    @Override
+    public void setFromToDate(String from, String to) {
+        fromDate.setText(String.format("c %s", from));
+        toDate.setText(String.format("до %s", to));
+    }
+
+    @Override
+    public void clearCheck() {
+        radioGroup.check(R.id.radioButtonAll);
+    }
+
+    @Override
+    public void setEnabledDateLayout(boolean enabledDateLayout) {
+        if (enabledDateLayout)
+            dateLayout.setVisibility(View.VISIBLE);
+        else dateLayout.setVisibility(View.GONE);
+    }
+
+    private RadioGroup.OnCheckedChangeListener checkedChangeListener = (radioGroup, i)->{
+        switch (i){
+            case R.id.radioButton:
+                presenter.onIncome();
+                Log.d(TAG, "checkedChangeListener: radioButton");
+                break;
+            case R.id.radioButton2:
+                presenter.onOutCome();
+                Log.d(TAG, "checkedChangeListener: radioButton2");
+                break;
+            case R.id.radioButtonAll:
+                presenter.onIncomeAndOutCome();
+                break;
+        }
+    };
 }
