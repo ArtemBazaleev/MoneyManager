@@ -28,4 +28,5 @@
     <string name="december">Декабрь</string>
     <string name="may">Май</string>
     <string name="toolbar_new_goal">Новая цель</string>
+    <string name="chose_date_txt">Chose date</string>
 </resources>

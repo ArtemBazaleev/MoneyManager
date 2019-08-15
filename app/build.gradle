@@ -44,6 +44,9 @@ dependencies {
     implementation 'tech.schoolhelper:moxy-x-androidx:1.7.0'
     implementation 'tech.schoolhelper:moxy-x-material:1.7.0'
 
+    //dateTimePicker
+    implementation 'com.github.Kunzisoft:Android-SwitchDateTimePicker:2.0'
+
 
     //circleimageview
     implementation 'de.hdodenhof:circleimageview:3.0.0'

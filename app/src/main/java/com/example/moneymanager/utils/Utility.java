@@ -2,6 +2,7 @@ package com.example.moneymanager.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -15,8 +16,10 @@ import com.example.moneymanager.model.dbModel.DbCategory;
 import com.example.moneymanager.model.dbModel.DbIcon;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -172,5 +175,27 @@ public class Utility {
         database.dbIconInteraction().insertData(Utility.getIcons());
         database.dbCategoryInteraction().addCategory(Utility.getCategories(database.dbIconInteraction()));
         database.dbAccountInteraction().addAccount(Utility.getAccount(database.dbIconInteraction()));
+    }
+
+    public static String formatDate(Long date){
+        DateFormat df = new DateFormat();
+        return DateFormat.format("dd MMM HH:mm", new Date(date)).toString();
+    }
+
+    public static String formatDateForHistoryTitle(Long date){
+        DateFormat df = new DateFormat();
+        return DateFormat.format("dd MMM yyyy", new Date(date)).toString();
+    }
+
+    public static String formatDouble(Double value){
+        String res = String.format(Locale.getDefault(),"%.2f", value);
+        res = res.replace(".",",");
+        StringBuilder stringBuilder = new StringBuilder(res);
+        int index = stringBuilder.indexOf(",");
+        for (int i = index; i>0;i--){
+            if ((i-index)%3 == 0 && i!=index)
+                stringBuilder.insert(i,' ');
+        }
+        return stringBuilder.toString();
     }
 }

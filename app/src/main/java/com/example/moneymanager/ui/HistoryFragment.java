@@ -2,11 +2,9 @@ package com.example.moneymanager.ui;
 
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,34 +12,41 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.example.moneymanager.App;
 import com.example.moneymanager.R;
 import com.example.moneymanager.adapters.HistoryAdapter;
 import com.example.moneymanager.model.HistoryModel;
+import com.example.moneymanager.presentation.presenter.HistoryFragmentPresenter;
+import com.example.moneymanager.presentation.view.HistoryFragmentView;
+import com.example.moneymanager.utils.Utility;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-// TODO: 2019-08-13 add moxy
+public class HistoryFragment extends MvpAppCompatFragment implements HistoryFragmentView {
 
-public class HistoryFragment extends MvpAppCompatFragment {
+    @BindView(R.id.recycler_history) RecyclerView recyclerHistory;
+    @BindView(R.id.filter_btn) ImageView filterBtn;
+    @BindView(R.id.textView24) TextView totalBalance;
 
-    @BindView(R.id.recycler_history)
-    RecyclerView recyclerHistory;
-    @BindView(R.id.filter_btn)
-    ImageView filterBtn;
+    @InjectPresenter
+    HistoryFragmentPresenter presenter;
+
+    @ProvidePresenter
+    HistoryFragmentPresenter providePresenter(){
+        App app = (App) Objects.requireNonNull(getActivity()).getApplicationContext();
+        return new HistoryFragmentPresenter(app.getDatabase().dataBaseTransactionContract());
+    }
 
     public HistoryFragment() {
-        // Required empty public constructor
     }
 
 
@@ -51,24 +56,10 @@ public class HistoryFragment extends MvpAppCompatFragment {
         View v = inflater.inflate(R.layout.fragment_history, container, false);
         ButterKnife.bind(this, v);
         init();
+        presenter.onCreate();
         return v;
     }
-    //Fake init just to see design
     private void init() {
-        List<HistoryModel> models = new ArrayList<>();
-        models.add(new HistoryModel(HistoryModel.TYPE_TOTAL));
-        for (int i = 0; i<4; i++)
-            models.add(new HistoryModel(HistoryModel.TYPE_HISTORY));
-        models.add(new HistoryModel(HistoryModel.TYPE_TOTAL));
-        for (int i = 0; i<4; i++)
-            models.add(new HistoryModel(HistoryModel.TYPE_HISTORY));
-        models.add(new HistoryModel(HistoryModel.TYPE_TOTAL));
-        for (int i = 0; i<4; i++)
-            models.add(new HistoryModel(HistoryModel.TYPE_HISTORY));
-        HistoryAdapter adapter = new HistoryAdapter(getContext(), models, this::onHistoryItemClicked);
-        recyclerHistory.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerHistory.setAdapter(adapter);
-
         filterBtn.setOnClickListener(l-> startActivity(new Intent(getContext(), FilterActivity.class)));
     }
 
@@ -76,4 +67,20 @@ public class HistoryFragment extends MvpAppCompatFragment {
 
     }
 
+    @Override
+    public void showToastyMessage(String message) {
+
+    }
+
+    @Override
+    public void loadTransactions(List<HistoryModel> transactions) {
+        HistoryAdapter adapter = new HistoryAdapter(getContext(), transactions, this::onHistoryItemClicked);
+        recyclerHistory.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerHistory.setAdapter(adapter);
+    }
+
+    @Override
+    public void setTotalBalance(double balance) {
+        totalBalance.setText(String.format("\u20BD %s", Utility.formatDouble(balance)));
+    }
 }

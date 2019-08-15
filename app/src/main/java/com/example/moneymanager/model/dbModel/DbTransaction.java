@@ -27,9 +27,12 @@ public class DbTransaction {
     @Embedded(prefix = "account_")
     public DbAccount transactionAccountID;
     public double sum;
-    @Embedded(prefix = "icon_")
-    public DbIcon transactionIcon;
+//    @Embedded(prefix = "icon_")
+//    public DbIcon transactionIcon;
     public int isIncome;
 
-
+    @Override
+    public String toString() {
+        return "note = "+ note + "\ndate = " + date + "\nsum = " + sum + "\nisIncome = " + isIncome;
+    }
 }

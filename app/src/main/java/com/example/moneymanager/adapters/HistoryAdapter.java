@@ -4,14 +4,18 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moneymanager.R;
 import com.example.moneymanager.model.HistoryModel;
+import com.example.moneymanager.utils.Utility;
 
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 public class HistoryAdapter extends RecyclerView.Adapter {
     private static final int TYPE_HISTORY_ITEM = 0;
@@ -66,23 +70,59 @@ public class HistoryAdapter extends RecyclerView.Adapter {
     }
 
     private class HistoryViewHolder extends RecyclerView.ViewHolder{
-
+        TextView categoryTxt;
+        ImageView categoryImg;
+        TextView note;
+        TextView sum;
+        HistoryModel model;
         HistoryViewHolder(@NonNull View itemView) {
             super(itemView);
+            categoryImg = itemView.findViewById(R.id.imageView4);
+            categoryTxt = itemView.findViewById(R.id.textView17);
+            note = itemView.findViewById(R.id.textView19);
+            sum = itemView.findViewById(R.id.textView20);
         }
 
         void bind(HistoryModel historyModel) {
-
+            model = historyModel;
+            categoryTxt.setText(model.getTransaction().transactionCategoryID.categoryName);
+            categoryImg.setImageDrawable(
+                    mContext.getResources()
+                            .getDrawable(
+                                    Utility.getResId(
+                                            model.getTransaction().transactionCategoryID.drawableIcon.drawableIcon,
+                                            R.drawable.class)));
+            if (model.getTransaction().isIncome == 1) {
+                categoryImg.setBackground(mContext.getResources().getDrawable(R.drawable.bg_light_green_round));
+                sum.setText(String.format("\u20BD + %s", Utility.formatDouble(model.getSum())));
+                sum.setTextColor(mContext.getResources().getColor(R.color.colorLightGreen));
+            }
+            else {
+                categoryImg.setBackground(mContext.getResources().getDrawable(R.drawable.bg_light_red_round));
+                sum.setText(String.format("\u20BD - %s", Utility.formatDouble(model.getSum())));
+                sum.setTextColor(mContext.getResources().getColor(R.color.colorLightRed));
+            }
+            note.setText(model.getNote());
         }
     }
 
     private class TotalViewHolder extends RecyclerView.ViewHolder{
+        TextView sum;
+        TextView date;
+        HistoryModel model;
         TotalViewHolder(@NonNull View itemView) {
             super(itemView);
+            date = itemView.findViewById(R.id.textView21);
+            sum = itemView.findViewById(R.id.textView22);
         }
 
         void bind(HistoryModel historyModel) {
-
+            model = historyModel;
+            if (model.getSum()<= 0.0)
+                sum.setBackground(mContext.getResources().getDrawable(R.drawable.bg_light_red_round));
+            else sum.setBackground(mContext.getResources().getDrawable(R.drawable.bg_light_green_round));
+            sum.setText(Utility.formatDouble(model.getSum()));
+            date.setText(model.getDate());
         }
     }
 

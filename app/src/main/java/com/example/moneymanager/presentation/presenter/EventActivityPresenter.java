@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.example.moneymanager.interfaces.db.DataBaseTransactionContract;
 import com.example.moneymanager.interfaces.db.DbAccountInteraction;
 import com.example.moneymanager.interfaces.db.DbCategoryInteraction;
 import com.example.moneymanager.model.AccountModel;
@@ -14,36 +15,49 @@ import com.example.moneymanager.model.dbModel.DbTransaction;
 import com.example.moneymanager.presentation.view.EventActivityView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import io.reactivex.Completable;
+import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 @InjectViewState
 public class EventActivityPresenter extends MvpPresenter<EventActivityView> {
-    public static final int MODE_INCOME = 0;
-    public static final int MODE_OUTCOME = 1;
+    private static final int MODE_INCOME = 0;
+    private static final int MODE_OUTCOME = 1;
     private String TAG = "EventActivityPresenter";
 
     private DbCategoryInteraction categoryInteraction;
     private DbAccountInteraction accountInteraction;
     private DbTransaction transaction;
+    private DataBaseTransactionContract transactionContract;
     private int mode = MODE_OUTCOME;
 
-    public EventActivityPresenter(DbCategoryInteraction categoryInteraction, DbAccountInteraction accountInteraction) {
+    public EventActivityPresenter(DbCategoryInteraction categoryInteraction,
+                                  DbAccountInteraction accountInteraction,
+                                  DataBaseTransactionContract transactionContract) {
         this.categoryInteraction = categoryInteraction;
         this.accountInteraction = accountInteraction;
-        transaction = new DbTransaction();
-        transaction.note = "";
-        transaction.sum = 0.0;
+        this.transactionContract = transactionContract;
     }
 
     public void initBottomSheet(){
         Log.d(TAG, "onCreate: called");
+        transaction = new DbTransaction();
+        transaction.note = "";
+        transaction.image = "";
+        transaction.isIncome = 0;
+        transaction.sum = 0.0;
+        transaction.date =  new Date(System.currentTimeMillis()).getTime();
+        getViewState().setDateFragment(transaction.date);
         requestAccounts();
         requestCategories();
     }
+
+
 
     private void requestAccounts() {
         Log.d(TAG, "requestAccounts: called");
@@ -55,6 +69,8 @@ public class EventActivityPresenter extends MvpPresenter<EventActivityView> {
                     for (DbAccount i:accounts)
                         models.add(new AccountModel(i));
                     getViewState().loadAccounts(models);
+                    getViewState().onAccountChosen(models.get(0));
+                    transaction.transactionAccountID = models.get(0).getAccount();
                 }, throwable -> {
 
                 });
@@ -72,7 +88,7 @@ public class EventActivityPresenter extends MvpPresenter<EventActivityView> {
         }
     }
 
-    private void requestOutcomeCategories() {
+    private void requestOutcomeCategories() {  // TODO: 2019-08-15 bug when first inited...
         Log.d(TAG, "requestOutcomeCategories: called");
         Disposable d = categoryInteraction.getAllOutComeCategories()
                 .subscribeOn(Schedulers.io())
@@ -82,6 +98,8 @@ public class EventActivityPresenter extends MvpPresenter<EventActivityView> {
                     for (DbCategory i:categories)
                         models.add(new CategoryModel(i));
                     getViewState().loadCategories(models);
+                    getViewState().onCategoryChosen(models.get(0),false);
+                    transaction.transactionCategoryID = models.get(0).getCategory();
                 }, Throwable::printStackTrace);
     }
 
@@ -95,13 +113,15 @@ public class EventActivityPresenter extends MvpPresenter<EventActivityView> {
                     for (DbCategory i:categories)
                         models.add(new CategoryModel(i));
                     getViewState().loadCategories(models);
+                    getViewState().onCategoryChosen(models.get(0),false);
+                    transaction.transactionCategoryID = models.get(0).getCategory();
                 }, Throwable::printStackTrace);
     }
 
     public void onCategoryClicked(CategoryModel categoryModel) {
         transaction.transactionCategoryID = categoryModel.getCategory();
         getViewState().hideBottomSheet();
-        getViewState().onCategoryChosen(categoryModel);
+        getViewState().onCategoryChosen(categoryModel,true);
     }
 
     public void onAccountClicked(AccountModel accountModel) {
@@ -112,17 +132,15 @@ public class EventActivityPresenter extends MvpPresenter<EventActivityView> {
     }
 
     public void setIncome(Boolean isIncome){
-        if (isIncome)
+        if (isIncome) {
             transaction.isIncome = 1;
-        else transaction.isIncome = 0;
-    }
+            requestIncomeCategories();
+        }
+        else {
+            transaction.isIncome = 0;
+            requestOutcomeCategories();
+        }
 
-    public void setNote(String note){
-        transaction.note = note;
-    }
-
-    public void setSum(Double sum){
-        transaction.sum = sum;
     }
 
     public void setDate(Long date){
@@ -135,5 +153,44 @@ public class EventActivityPresenter extends MvpPresenter<EventActivityView> {
 
     public void setMode(int mode) {
         this.mode = mode;
+    }
+
+    public void onNoteChanged(String note) {
+        transaction.note = note;
+    }
+
+    public void onDateChosen(Long date) {
+        transaction.date = date;
+        getViewState().setDateFragment(date);
+    }
+
+    public void onSumChanged(double sum) {
+        transaction.sum = sum;
+    }
+
+    public void onSaveClicked() {
+        Log.d(TAG, "onSaveClicked: " + transaction.toString());
+        Completable.fromAction(() -> transactionContract
+                .addTransaction(transaction))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new CompletableObserver() {
+            @Override
+            public void onSubscribe(Disposable d) {
+            }
+
+            @Override
+            public void onComplete() {
+                getViewState().stopSelf();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void onCreate() {
     }
 }

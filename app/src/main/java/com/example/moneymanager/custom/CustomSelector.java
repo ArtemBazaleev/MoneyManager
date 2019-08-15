@@ -17,6 +17,7 @@ public class CustomSelector extends ConstraintLayout {
     private TextView leftText;
     private TextView rightText;
     private ConstraintLayout border;
+    private IOnSelectListener mListener;
 
     public CustomSelector(Context context) {
         super(context);
@@ -31,7 +32,6 @@ public class CustomSelector extends ConstraintLayout {
     public CustomSelector(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
-
     }
 
     private void initListeners() {
@@ -40,20 +40,21 @@ public class CustomSelector extends ConstraintLayout {
             leftBtn.setBackgroundResource(R.drawable.bg_red_selector);
             border.setBackgroundResource(R.drawable.bg_custom_selector_red);
             leftText.setTextColor(getContext().getResources().getColor(R.color.colorWhite));
-
             rightText.setTextColor(getContext().getResources().getColor(R.color.colorDarkText));
             rightBtn.setBackgroundResource(0);
+            if (mListener!=null)
+                mListener.isIncome(false);
         });
 
         rightBtn.setOnClickListener(l->{
             Log.d(TAG, "rightBtn: Clicked");
-
             rightBtn.setBackgroundResource(R.drawable.bg_green_selector);
             border.setBackgroundResource(R.drawable.bg_custom_selector_green);
             rightText.setTextColor(getContext().getResources().getColor(R.color.colorWhite));
-
             leftText.setTextColor(getContext().getResources().getColor(R.color.colorDarkText));
             leftBtn.setBackgroundResource(0);
+            if (mListener!=null)
+                mListener.isIncome(true);
         });
     }
 
@@ -65,5 +66,13 @@ public class CustomSelector extends ConstraintLayout {
         rightText = v.findViewById(R.id.right_text_selector);
         border = v.findViewById(R.id.border_selector);
         initListeners();
+    }
+
+    public interface IOnSelectListener{
+        void isIncome(boolean isIncome);
+    }
+
+    public void setmListener(IOnSelectListener mListener) {
+        this.mListener = mListener;
     }
 }

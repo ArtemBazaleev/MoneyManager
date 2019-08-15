@@ -56,16 +56,18 @@
                 android:id="@+id/textView16"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:ellipsize="end"
+                android:paddingStart="8dp"
                 android:lines="1"
                 android:text="Наличные"
-                android:textSize="14sp"
-
-                android:layout_marginStart="24dp"
                 android:textColor="@color/colorDarkText"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/constraintLayout_account_card"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
@@ -183,6 +185,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:id="@+id/date_event_action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -242,7 +245,7 @@
                 android:minHeight="18dp"
                 android:maxLines="1"
                 android:ems="10"
-                android:text="0,00 РУБ"
+                android:digits="0123456789."
                 android:gravity="center"
                 android:textSize="14sp"
                 android:padding="4dp"
@@ -325,8 +328,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:gravity="center"
                 android:text="Автомобиль"
+                android:paddingStart="8dp"
                 android:textColor="@color/colorDarkText"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"

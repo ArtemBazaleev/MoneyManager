@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -48,12 +49,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class EventActivity extends MvpAppCompatActivity
-        implements DatePickerDialog.OnDateSetListener, EventActivityView,
-        EventActionsFragment.OnFragmentInteractionListener{
+public class EventActivity extends MvpAppCompatActivity implements DatePickerDialog.OnDateSetListener,
+        EventActivityView, EventActionsFragment.OnFragmentInteractionListener{
+
     @BindView(R.id.recycler_category) RecyclerView recyclerView;
     @BindView(R.id.recycler_account) RecyclerView recyclerViewAccounts;
-
+    @BindView(R.id.button2) Button saveBtn;
     private BottomSheetBehavior mBottomSheetBehavior;
     private BottomSheetBehavior bottomSheetBehaviorAccount;
     private EventActionsFragment eventActionsFragment;
@@ -64,7 +65,9 @@ public class EventActivity extends MvpAppCompatActivity
     EventActivityPresenter providePresenter(){
         App app = (App) getApplicationContext();
         return new EventActivityPresenter(
-                app.getDatabase().dbCategoryInteraction(), app.getDatabase().dbAccountInteraction()
+                app.getDatabase().dbCategoryInteraction(),
+                app.getDatabase().dbAccountInteraction(),
+                app.getDatabase().dataBaseTransactionContract()
         );
     }
 
@@ -73,9 +76,9 @@ public class EventActivity extends MvpAppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
         ButterKnife.bind(this);
-        presenter.initBottomSheet();
         init();
         hideKeyboard();
+        presenter.initBottomSheet();
     }
 
     //fake init
@@ -87,6 +90,7 @@ public class EventActivity extends MvpAppCompatActivity
         bottomSheetBehaviorAccount.setState(BottomSheetBehavior.STATE_HIDDEN);
         bottomSheetBehaviorAccount.setBottomSheetCallback(bottomSheetCallback);
         mBottomSheetBehavior.setBottomSheetCallback(bottomSheetCallback);
+        saveBtn.setOnClickListener(l -> presenter.onSaveClicked());
 
         eventActionsFragment = new EventActionsFragment();
         getSupportFragmentManager()
@@ -183,13 +187,33 @@ public class EventActivity extends MvpAppCompatActivity
     }
 
     @Override
-    public void onCategoryChosen(CategoryModel categoryModel) {
-        eventActionsFragment.onCategoryChosen(categoryModel);
+    public void onNoteTextChanged(String note) {
+        presenter.onNoteChanged(note);
+    }
+
+    @Override
+    public void onDateChosen(Long date) {
+        presenter.onDateChosen(date);
+    }
+
+    @Override
+    public void onSumChanged(double sum) {
+        presenter.onSumChanged(sum);
+    }
+
+    @Override
+    public void isIncome(boolean isIncome) {
+        presenter.setIncome(isIncome);
+    }
+
+    @Override
+    public void onCategoryChosen(CategoryModel categoryModel, boolean requestFocus) {
+        eventActionsFragment.setCategory(categoryModel, requestFocus);
     }
 
     @Override
     public void onAccountChosen(AccountModel accountModel) {
-        eventActionsFragment.onAccountChosen(accountModel);
+        eventActionsFragment.setAccount(accountModel);
     }
 
     @Override
@@ -204,5 +228,15 @@ public class EventActivity extends MvpAppCompatActivity
         if (shown)
             bottomSheetBehaviorAccount.setState(BottomSheetBehavior.STATE_EXPANDED);
         else bottomSheetBehaviorAccount.setState(BottomSheetBehavior.STATE_HIDDEN);
+    }
+
+    @Override
+    public void setDateFragment(Long date) {
+        eventActionsFragment.setDate(date);
+    }
+
+    @Override
+    public void stopSelf() {
+        this.finish();
     }
 }

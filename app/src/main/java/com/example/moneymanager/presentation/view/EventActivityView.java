@@ -17,11 +17,15 @@ public interface EventActivityView extends MvpView {
 
     void hideBottomSheet();
 
-    void onCategoryChosen(CategoryModel categoryModel);
+    void onCategoryChosen(CategoryModel categoryModel, boolean requestFocus);
 
     void onAccountChosen(AccountModel accountModel);
 
     void setCategoryShown(boolean shown);
 
     void setAccountShown(boolean shown);
+
+    void setDateFragment(Long date);
+
+    void stopSelf();
 }
