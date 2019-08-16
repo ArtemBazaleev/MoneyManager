@@ -142,6 +142,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.example.moneymanager.custom.CustomIcon
+                    android:id="@+id/custom_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -180,6 +181,7 @@
                 android:background="@drawable/bg_text_bordered"
                 android:ems="10"
                 android:inputType="numberDecimal|numberSigned"
+                android:digits="1234567890."
                 android:maxLines="4"
                 android:padding="16dp"
                 app:layout_constraintEnd_toEndOf="@+id/constraintLayout10"

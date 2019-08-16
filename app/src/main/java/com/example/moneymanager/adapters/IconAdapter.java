@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.moneymanager.R;
 import com.example.moneymanager.model.AccountModel;
 import com.example.moneymanager.model.IconModel;
+import com.example.moneymanager.utils.Utility;
 
 import java.util.List;
 
@@ -49,19 +51,23 @@ public class IconAdapter extends RecyclerView.Adapter<IconAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ConstraintLayout constraintLayout;
-        public ViewHolder(@NonNull View itemView) {
+        IconModel model;
+        ImageView img;
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             constraintLayout = itemView.findViewById(R.id.icon_constraint);
             constraintLayout.setOnClickListener(this::onClicked);
+            img = itemView.findViewById(R.id.icon);
         }
 
         private void onClicked(View view) {
             if (mListener!=null)
-                mListener.onItemClicked(new IconModel());
+                mListener.onItemClicked(model);
         }
 
-        public void bind(IconModel accountModel) {
-
+        public void bind(IconModel iconModel) {
+            model = iconModel;
+            img.setImageDrawable(mContext.getResources().getDrawable(Utility.getResId(model.getDbIcon().drawableIcon, R.drawable.class)));
         }
     }
 

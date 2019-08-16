@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -198,4 +199,5 @@ public class Utility {
         }
         return stringBuilder.toString();
     }
+
 }

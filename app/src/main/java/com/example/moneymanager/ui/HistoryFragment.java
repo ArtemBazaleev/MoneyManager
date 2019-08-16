@@ -36,6 +36,8 @@ public class HistoryFragment extends MvpAppCompatFragment implements HistoryFrag
     @BindView(R.id.recycler_history) RecyclerView recyclerHistory;
     @BindView(R.id.filter_btn) ImageView filterBtn;
     @BindView(R.id.textView24) TextView totalBalance;
+    @BindView(R.id.textView26) TextView income;
+    @BindView(R.id.history_outcome) TextView outcome;
 
     @InjectPresenter
     HistoryFragmentPresenter presenter;
@@ -82,5 +84,15 @@ public class HistoryFragment extends MvpAppCompatFragment implements HistoryFrag
     @Override
     public void setTotalBalance(double balance) {
         totalBalance.setText(String.format("\u20BD %s", Utility.formatDouble(balance)));
+    }
+
+    @Override
+    public void setIncome(double income) {
+        this.income.setText(String.format("\u20BD %s", Utility.formatDouble(income)));
+    }
+
+    @Override
+    public void setOutCome(double outcome) {
+        this.outcome.setText(String.format("\u20BD %s", Utility.formatDouble(outcome)));
     }
 }

@@ -11,4 +11,8 @@ public interface HistoryFragmentView extends MvpView {
     void loadTransactions(List<HistoryModel> transactions);
 
     void setTotalBalance(double balance);
+
+    void setIncome(double income);
+
+    void setOutCome(double outcome);
 }

@@ -43,7 +43,10 @@ public class HistoryFragmentPresenter extends MvpPresenter<HistoryFragmentView> 
                     Disposable d1 = Flowable.just(updateTransactions(dbTransactions))
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
-                            .subscribe(getViewState()::loadTransactions, Throwable::printStackTrace);
+                            .subscribe(historyModels -> {
+                                getViewState().loadTransactions(historyModels);
+                                calculateIncomeOutcome(historyModels);
+                            }, Throwable::printStackTrace);
                 }, Throwable::printStackTrace);
     }
 
@@ -55,8 +58,24 @@ public class HistoryFragmentPresenter extends MvpPresenter<HistoryFragmentView> 
                    Disposable d1 = Flowable.just(updateTransactions(dbTransactions))
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
-                            .subscribe(getViewState()::loadTransactions, Throwable::printStackTrace);
+                            .subscribe(historyModels -> {
+                                getViewState().loadTransactions(historyModels);
+                                calculateIncomeOutcome(historyModels);
+                            }, Throwable::printStackTrace);
                 }, Throwable::printStackTrace);
+    }
+
+    private void calculateIncomeOutcome(List<HistoryModel> historyModels) {
+        double income = 0;
+        double outcome = 0;
+        for (HistoryModel i:historyModels) {
+            if (i.getType() == HistoryModel.TYPE_HISTORY && i.isIncome())
+                income+=i.getTransaction().sum;
+            else if(i.getType() == HistoryModel.TYPE_HISTORY && !i.isIncome())
+                outcome+=i.getTransaction().sum;
+        }
+        getViewState().setIncome(income);
+        getViewState().setOutCome(outcome);
     }
 
     private List<HistoryModel> updateTransactions(List<DbTransaction> transaction) {
