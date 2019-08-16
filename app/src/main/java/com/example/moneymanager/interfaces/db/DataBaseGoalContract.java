@@ -3,6 +3,7 @@ package com.example.moneymanager.interfaces.db;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.Query;
 import androidx.room.RawQuery;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
@@ -16,6 +17,9 @@ public interface DataBaseGoalContract {
 
     @RawQuery
     List<DbGoal> getTransactions(SupportSQLiteQuery query);
+
+    @Query("SELECT * FROM dbgoal")
+    Flowable<List<DbGoal>> getAllGoals();
     @Insert
     void addTransaction(DbGoal goal);
     @Delete
