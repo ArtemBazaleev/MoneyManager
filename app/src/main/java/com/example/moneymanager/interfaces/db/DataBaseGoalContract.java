@@ -5,8 +5,10 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.RawQuery;
+import androidx.room.Update;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
+import com.example.moneymanager.model.GoalModel;
 import com.example.moneymanager.model.dbModel.DbGoal;
 
 import java.util.List;
@@ -24,4 +26,10 @@ public interface DataBaseGoalContract {
     void addTransaction(DbGoal goal);
     @Delete
     void deleteTransaction(DbGoal goal);
+    @Query("SELECT * FROM dbgoal WHERE goalId = :goalID")
+    Flowable<DbGoal> getGoalByID(int goalID);
+
+    @Update
+    void updateGoal(DbGoal goal);
+
 }

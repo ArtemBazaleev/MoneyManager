@@ -108,6 +108,8 @@ public class GoalFragment extends MvpAppCompatFragment implements GoalFragmentVi
 
     @Override
     public void startGoalViewActivity(int goalId) {
-
+        Intent i = new Intent (getContext(), GoalViewActivity.class);
+        i.putExtra(GoalViewActivity.GOAL_ID, goalId);
+        startActivity(i);
     }
 }

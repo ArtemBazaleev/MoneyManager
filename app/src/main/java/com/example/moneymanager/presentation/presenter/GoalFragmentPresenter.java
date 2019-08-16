@@ -1,6 +1,5 @@
 package com.example.moneymanager.presentation.presenter;
 
-import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
@@ -10,7 +9,7 @@ import com.example.moneymanager.model.GoalModel;
 import com.example.moneymanager.model.dbModel.DbGoal;
 import com.example.moneymanager.model.dbModel.DbGoalTransaction;
 import com.example.moneymanager.presentation.view.GoalFragmentView;
-import com.example.moneymanager.utils.Utility;
+
 
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -35,7 +34,7 @@ public class GoalFragmentPresenter extends MvpPresenter<GoalFragmentView> {
     }
 
     public void onGoalClicked(GoalModel goalModel) {
-        getViewState().startGoalViewActivity(0);
+        getViewState().startGoalViewActivity(goalModel.getGoal().goalId);
     }
 
     public void init() {

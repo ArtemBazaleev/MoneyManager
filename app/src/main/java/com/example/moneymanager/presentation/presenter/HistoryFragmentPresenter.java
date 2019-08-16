@@ -78,7 +78,7 @@ public class HistoryFragmentPresenter extends MvpPresenter<HistoryFragmentView> 
         getViewState().setOutCome(outcome);
     }
 
-    private List<HistoryModel> updateTransactions(List<DbTransaction> transaction) {
+    private List<HistoryModel> updateTransactions(List<DbTransaction> transaction) { // TODO: 2019-08-16 bug when first inited 
         double sum = 0.0;
         List<HistoryModel> historyModels = new ArrayList<>();
         List<HistoryModel> titles = new LinkedList<>();

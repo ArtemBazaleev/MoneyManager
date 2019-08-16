@@ -72,7 +72,7 @@ public class GoalAdapter extends RecyclerView.Adapter<GoalAdapter.ViewHolder> {
 
         void bind(GoalModel model) {
             this.model = model;
-            progressBar.setProgress((float) (model.getGoal().balance / model.getGoal().sumTotal));
+            progressBar.setProgress((float) (model.getGoal().balance / model.getGoal().sumTotal)*100);
             goalName.setText(model.getGoal().goalName);
             goalNote.setText(model.getGoal().note);
             goalImg.setImageDrawable(

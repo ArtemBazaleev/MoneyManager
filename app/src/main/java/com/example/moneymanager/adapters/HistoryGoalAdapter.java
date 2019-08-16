@@ -4,12 +4,15 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moneymanager.R;
 import com.example.moneymanager.model.HistoryGoalModel;
+import com.example.moneymanager.model.HistoryModel;
+import com.example.moneymanager.utils.Utility;
 
 import java.util.List;
 
@@ -40,12 +43,20 @@ public class HistoryGoalAdapter extends RecyclerView.Adapter<HistoryGoalAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public ViewHolder(@NonNull View itemView) {
+        private TextView sum;
+        private TextView date;
+        private HistoryGoalModel model;
+
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
+            sum = itemView.findViewById(R.id.textView20);
+            date = itemView.findViewById(R.id.textView19);
         }
 
         public void bind(HistoryGoalModel historyGoalModel) {
-
+            model = historyGoalModel;
+            sum.setText(String.format("\u20BD %s", Utility.formatDouble(model.getTransaction().sum)));
+            date.setText(Utility.formatDate(model.getTransaction().goalTransactionDate));
         }
     }
 }
