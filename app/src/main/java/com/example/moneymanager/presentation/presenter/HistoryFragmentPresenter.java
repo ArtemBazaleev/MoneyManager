@@ -6,8 +6,11 @@ import com.example.moneymanager.interfaces.db.DataBaseTransactionContract;
 import com.example.moneymanager.model.FilterModel;
 import com.example.moneymanager.model.HistoryModel;
 import com.example.moneymanager.model.dbModel.DbTransaction;
+import com.example.moneymanager.model.dbModel.QueryConstructor;
 import com.example.moneymanager.presentation.view.HistoryFragmentView;
 import com.example.moneymanager.utils.Utility;
+
+import org.reactivestreams.Subscriber;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,6 +18,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -31,8 +35,47 @@ public class HistoryFragmentPresenter extends MvpPresenter<HistoryFragmentView> 
     }
 
     public void onCreate(){
-        requestCurrentTransactions();
+        //requestCurrentTransactions();
     }
+
+    public void onStart(FilterModel filter){
+        filterModel = filter;
+        if (filterModel.isEmpty())
+            requestCurrentTransactions();
+        else requestFilterTransactions();
+    }
+
+    private void requestFilterTransactions() {
+        QueryConstructor queryConstructor = new QueryConstructor();
+//        Disposable d = Flowable.just(this.transactionContract.getTransactions(queryConstructor.buildQuery(filterModel)))
+//                .subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(transactions -> {
+//                    Disposable d1 = Flowable.just(updateTransactions(transactions))
+//                            .observeOn(AndroidSchedulers.mainThread())
+//                            .subscribeOn(Schedulers.io())
+//                            .subscribe(historyModels -> {
+//                                getViewState().loadTransactions(historyModels);
+//                                calculateIncomeOutcome(historyModels);
+//                            }, Throwable::printStackTrace);
+//                },Throwable::printStackTrace);
+
+        Disposable d = Flowable.fromCallable(() ->
+                transactionContract.getTransactions(queryConstructor.buildQuery(filterModel)))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(transactions -> {
+                    Disposable d1 = Flowable.just(updateTransactions(transactions))
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(historyModels -> {
+                                getViewState().loadTransactions(historyModels);
+                                calculateIncomeOutcome(historyModels);
+                            }, Throwable::printStackTrace);
+                }, Throwable::printStackTrace);
+    }
+
+
     private void requestCurrentTransactions(){
         Calendar from = Calendar.getInstance();
         from.set(from.get(Calendar.YEAR), from.get(Calendar.MONTH), 1, 0, 0);
@@ -139,5 +182,13 @@ public class HistoryFragmentPresenter extends MvpPresenter<HistoryFragmentView> 
         }
         getViewState().setTotalBalance(sum);
         return historyModels;
+    }
+
+    public FilterModel getFilterModel() {
+        return filterModel;
+    }
+
+    public void setFilterModel(FilterModel filterModel) {
+        this.filterModel = filterModel;
     }
 }

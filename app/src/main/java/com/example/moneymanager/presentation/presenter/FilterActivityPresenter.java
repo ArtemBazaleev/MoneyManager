@@ -1,6 +1,8 @@
 package com.example.moneymanager.presentation.presenter;
 
 import com.aminography.primecalendar.PrimeCalendar;
+import com.aminography.primecalendar.common.CalendarFactory;
+import com.aminography.primecalendar.common.CalendarType;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.example.moneymanager.interfaces.db.DbAccountInteraction;
@@ -13,6 +15,7 @@ import com.example.moneymanager.presentation.view.FilterActivityView;
 import com.example.moneymanager.ui.BottomSheetCategoryFragment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -42,8 +45,52 @@ public class FilterActivityPresenter extends MvpPresenter<FilterActivityView> {
         getViewState().setSelectedAccount(account);
     }
 
-    public void onCreate(){
-        loadAccount();
+    public void onCreate(FilterModel filterHistory){
+        filter = filterHistory;
+        if (filter.isEmpty())
+            loadAccount();
+        else
+            loadAccountAndUpdateUi();
+
+    }
+
+    private void loadAccountAndUpdateUi() {
+        Disposable d = accountInteraction.getAllAccounts()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(accounts -> {
+                    List<AccountModel> models = new ArrayList<>();
+                    for (DbAccount i:accounts)
+                        models.add(new AccountModel(i));
+                    getViewState().initAccount(models);
+                    updateUI();
+                }, Throwable::printStackTrace);
+    }
+
+    private void updateUI() {
+        if (filter.getAccount()!=null)
+            getViewState().setSelectedAccount(filter.getAccount());
+        if (filter.getCategory()!=null) {
+            getViewState().setCategory(filter.getCategory());
+            getViewState().setEnabledCategory(true);
+        }
+        if (filter.getFromDate()!=null){
+            PrimeCalendar startDay = CalendarFactory.newInstance(CalendarType.CIVIL);
+            startDay.setTimeInMillis(filter.getFromDate());
+            PrimeCalendar endDay = CalendarFactory.newInstance(CalendarType.CIVIL);
+            endDay.setTimeInMillis(filter.getToDate());
+            getViewState().setFromToDate(
+                    startDay.getShortDateString().replace("/", "."),
+                    endDay.getShortDateString().replace("/", ".")
+            );
+            getViewState().setEnabledDateLayout(true);
+        }
+        if (filter.getIncome()!=null){
+            if (filter.getIncome())
+                getViewState().setIncomeSelected();
+            else getViewState().setOutcomeSelected();
+        }
+
     }
 
     private void loadAccount() {
@@ -80,12 +127,30 @@ public class FilterActivityPresenter extends MvpPresenter<FilterActivityView> {
     }
 
     public void onRangeDaysPicked(PrimeCalendar startDay, PrimeCalendar endDay) {
-        filter.setFromDate(startDay.getTimeInMillis());
-        filter.setToDate(endDay.getTimeInMillis());
         getViewState().setFromToDate(
                 startDay.getShortDateString().replace("/", "."),
                 endDay.getShortDateString().replace("/", ".")
         );
+
+        Calendar startDayCalendar = Calendar.getInstance();
+        startDayCalendar.set(Calendar.YEAR,startDay.getYear());
+        startDayCalendar.set(Calendar.MONTH,startDay.getMonth());
+        startDayCalendar.set(Calendar.DAY_OF_MONTH, startDay.getDayOfMonth());
+        startDayCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        startDayCalendar.set(Calendar.MINUTE, 0);
+        startDayCalendar.set(Calendar.SECOND,0);
+        Calendar endDayCalendar = Calendar.getInstance();
+        endDayCalendar.set(Calendar.YEAR, endDay.getYear());
+        endDayCalendar.set(Calendar.MONTH, endDay.getMonth());
+        endDayCalendar.set(Calendar.DAY_OF_MONTH, endDay.getDayOfMonth());
+        endDayCalendar.set(Calendar.HOUR_OF_DAY, 23);
+        endDayCalendar.set(Calendar.MINUTE, 59);
+        endDayCalendar.set(Calendar.SECOND,59);
+
+
+        filter.setFromDate(startDayCalendar.getTime().getTime());
+        filter.setToDate(endDayCalendar.getTime().getTime());
+
         getViewState().setEnabledDateLayout(true);
     }
 
@@ -117,5 +182,9 @@ public class FilterActivityPresenter extends MvpPresenter<FilterActivityView> {
         getViewState().clearCheck();
         filter.setIncome(null);
         getViewState().setEnabledCategory(false);
+    }
+
+    public void onSaveClicked() {
+        getViewState().stopSelf(filter);
     }
 }

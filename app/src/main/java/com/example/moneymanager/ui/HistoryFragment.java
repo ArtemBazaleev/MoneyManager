@@ -61,6 +61,14 @@ public class HistoryFragment extends MvpAppCompatFragment implements HistoryFrag
         presenter.onCreate();
         return v;
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        App app = (App) Objects.requireNonNull(getActivity()).getApplication();
+        presenter.onStart(app.getFilterHistory());
+    }
+
     private void init() {
         filterBtn.setOnClickListener(l-> startActivity(new Intent(getContext(), FilterActivity.class)));
     }

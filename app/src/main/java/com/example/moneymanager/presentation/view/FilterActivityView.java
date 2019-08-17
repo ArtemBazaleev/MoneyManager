@@ -3,6 +3,7 @@ package com.example.moneymanager.presentation.view;
 import com.arellomobile.mvp.MvpView;
 import com.example.moneymanager.model.AccountModel;
 import com.example.moneymanager.model.CategoryModel;
+import com.example.moneymanager.model.FilterModel;
 
 import java.util.List;
 
@@ -26,4 +27,10 @@ public interface FilterActivityView extends MvpView {
     void clearCheck();
 
     void setEnabledDateLayout(boolean enabledDateLayout);
+
+    void stopSelf(FilterModel filter);
+
+    void setIncomeSelected();
+
+    void setOutcomeSelected();
 }

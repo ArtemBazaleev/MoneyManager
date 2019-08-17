@@ -13,20 +13,21 @@ import java.util.List;
 import io.reactivex.Flowable;
 
 @Dao
-public interface DataBaseTransactionContract {
+public abstract class DataBaseTransactionContract {
 
     @RawQuery
-    List<DbTransaction> getTransactions(SupportSQLiteQuery query);
+    public abstract List<DbTransaction> getTransactions(SupportSQLiteQuery query);
 
     @Insert
-    void addTransaction(DbTransaction transaction);
+    public abstract void addTransaction(DbTransaction transaction);
 
     @Delete
-    void delete(DbTransaction transaction);
+    public abstract void delete(DbTransaction transaction);
 
     @Query("SELECT * FROM DbTransaction")
-    Flowable<List<DbTransaction>> getAllTransactions();
+    public abstract Flowable<List<DbTransaction>> getAllTransactions();
 
     @Query("SELECT * FROM dbtransaction WHERE date>=:fromDate AND date <=:toDate")
-    Flowable<List<DbTransaction>> getDataWithRange(Long fromDate, Long toDate);
+    public abstract Flowable<List<DbTransaction>> getDataWithRange(Long fromDate, Long toDate);
+
 }

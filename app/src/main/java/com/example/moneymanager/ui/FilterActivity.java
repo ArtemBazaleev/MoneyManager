@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ import com.example.moneymanager.R;
 import com.example.moneymanager.adapters.AccountAdapter;
 import com.example.moneymanager.model.AccountModel;
 import com.example.moneymanager.model.CategoryModel;
+import com.example.moneymanager.model.FilterModel;
 import com.example.moneymanager.presentation.presenter.FilterActivityPresenter;
 import com.example.moneymanager.presentation.view.FilterActivityView;
 import com.example.moneymanager.utils.Utility;
@@ -52,6 +54,8 @@ public class FilterActivity extends MvpAppCompatActivity implements FilterActivi
     @BindView(R.id.clearFilterBtn) ConstraintLayout clearFilterBtn;
     @BindView(R.id.constraintLayout7) ConstraintLayout dateLayout;
     @BindView(R.id.imageView13) ImageView delDateBtn;
+    @BindView(R.id.button3) Button saveBtn;
+
     private PrimeDatePickerBottomSheet datePicker;
     private BottomSheetCategoryFragment categoryFragment;
     private AccountAdapter accountAdapter;
@@ -75,7 +79,8 @@ public class FilterActivity extends MvpAppCompatActivity implements FilterActivi
         setContentView(R.layout.activity_filter);
         ButterKnife.bind(this);
         init();
-        presenter.onCreate();
+        App app = (App) getApplication();
+        presenter.onCreate(app.getFilterHistory());
     }
 
     private void init() {
@@ -96,6 +101,7 @@ public class FilterActivity extends MvpAppCompatActivity implements FilterActivi
         delCategory.setOnClickListener(v-> presenter.onDelCategoryClicked());
         clearFilterBtn.setOnClickListener(v-> presenter.clearFilter());
         delDateBtn.setOnClickListener(v->presenter.onDelDateClicked());
+        saveBtn.setOnClickListener(v -> presenter.onSaveClicked());
         datePicker.setOnDateSetListener(new PrimeDatePickerBottomSheet.OnDayPickedListener() {
             @Override
             public void onSingleDayPicked(@NonNull PrimeCalendar singleDay) {
@@ -177,6 +183,23 @@ public class FilterActivity extends MvpAppCompatActivity implements FilterActivi
         if (enabledDateLayout)
             dateLayout.setVisibility(View.VISIBLE);
         else dateLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void stopSelf(FilterModel filter) {
+        App app = (App) getApplication();
+        app.setFilterHistory(filter);
+        finish();
+    }
+
+    @Override
+    public void setIncomeSelected() {
+        radioGroup.check(R.id.radioButton);
+    }
+
+    @Override
+    public void setOutcomeSelected() {
+        radioGroup.check(R.id.radioButton2);
     }
 
     private RadioGroup.OnCheckedChangeListener checkedChangeListener = (radioGroup, i)->{

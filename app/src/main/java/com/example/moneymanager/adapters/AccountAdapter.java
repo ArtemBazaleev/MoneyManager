@@ -71,9 +71,8 @@ public class AccountAdapter extends RecyclerView.Adapter<AccountAdapter.ViewHold
     public void setSelected(AccountModel selected){
         unselectAll();
         for (AccountModel i: mData) {
-            if (i==selected)
+            if (selected.getAccount()!=null && i.getAccount().accountId==selected.getAccount().accountId)
                 i.setSelected(true);
-
         }
         notifyDataSetChanged();
     }

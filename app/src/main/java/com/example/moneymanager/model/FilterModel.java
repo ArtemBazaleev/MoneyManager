@@ -47,4 +47,8 @@ public class FilterModel {
     public void setAccount(AccountModel account) {
         this.account = account;
     }
+
+    public boolean isEmpty(){
+        return fromDate == null && isIncome == null && category == null && account == null;
+    }
 }
