@@ -78,6 +78,7 @@ public class GoalFragmentPresenter extends MvpPresenter<GoalFragmentView> {
         Disposable d = transactionInteraction.getTimeTransaction(date)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .take(1)
                 .subscribe(dbGoalTransactions -> {
                             double sum = 0.0;
                             for (DbGoalTransaction i:dbGoalTransactions)
@@ -91,6 +92,7 @@ public class GoalFragmentPresenter extends MvpPresenter<GoalFragmentView> {
         Disposable d = transactionInteraction.getTimeTransaction(date)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .take(1)
                 .subscribe(dbGoalTransactions -> {
                             double sum = 0.0;
                             for (DbGoalTransaction i:dbGoalTransactions)
@@ -104,6 +106,7 @@ public class GoalFragmentPresenter extends MvpPresenter<GoalFragmentView> {
         Disposable d = transactionInteraction.getTimeTransaction(date)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .take(1)
                 .subscribe(dbGoalTransactions -> {
                             double sum = 0.0;
                             for (DbGoalTransaction i:dbGoalTransactions)
@@ -112,6 +115,4 @@ public class GoalFragmentPresenter extends MvpPresenter<GoalFragmentView> {
                         },
                         Throwable::printStackTrace);
     }
-
-
 }

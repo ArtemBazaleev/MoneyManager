@@ -2,6 +2,7 @@ package com.example.moneymanager.adapters;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +18,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.moneymanager.R;
 import com.example.moneymanager.interfaces.ItemTouchHelperAdapter;
 import com.example.moneymanager.model.CategoryModel;
+import com.example.moneymanager.model.CategoryStatModel;
+import com.example.moneymanager.utils.Utility;
 
 import java.util.Collections;
 import java.util.List;
 
 public class CategoryStatAdapter extends RecyclerView.Adapter<CategoryStatAdapter.ViewHolder>
         implements ItemTouchHelperAdapter {
-    private List<CategoryModel> mData;
+    private List<CategoryStatModel> mData;
     private Context mContext ;
     private IOnItemClicked mListener;
 
-    public CategoryStatAdapter(List<CategoryModel> mData, Context mContext) {
+    public CategoryStatAdapter(List<CategoryStatModel> mData, Context mContext) {
         this.mData = mData;
         this.mContext = mContext;
     }
@@ -73,14 +76,21 @@ public class CategoryStatAdapter extends RecyclerView.Adapter<CategoryStatAdapte
         this.mListener = mListener;
     }
 
+    public void updateData(List<CategoryStatModel> categoryModels) {
+        mData = categoryModels;
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         TextView categoryName;
         ImageView img;
+        TextView sum;
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.cardView4);
             categoryName = itemView.findViewById(R.id.textView37);
+            sum = itemView.findViewById(R.id.textView39);
             img = itemView.findViewById(R.id.category_stat);
             cardView.setOnClickListener(this::onCardClicked);
         }
@@ -90,11 +100,17 @@ public class CategoryStatAdapter extends RecyclerView.Adapter<CategoryStatAdapte
                 mListener.onCategoryStatClicked(new CategoryModel());
         }
 
-        public void bind(CategoryModel categoryModel) {
-            cardView.setCardBackgroundColor(categoryModel.getColor());
+        public void bind(CategoryStatModel categoryModel) {
+            cardView.setCardBackgroundColor(Color.parseColor(categoryModel.getColor()));
             categoryName.setText(categoryModel.getName());
-            ImageViewCompat.setImageTintList(img, ColorStateList.valueOf(categoryModel.getTintColor()));
-
+            img.setImageDrawable(mContext.getResources().getDrawable(Utility.getResId(categoryModel.getIcon(),R.drawable.class)));
+            if (categoryModel.isIncome()) {
+                sum.setTextColor(mContext.getResources().getColor(R.color.colorLightGreen));
+                sum.setText(String.format("\u20BD +%s", Utility.formatDouble(categoryModel.getSum())));
+            }else {
+                sum.setTextColor(mContext.getResources().getColor(R.color.colorLightRed));
+                sum.setText(String.format("\u20BD -%s", Utility.formatDouble(categoryModel.getSum())));
+            }
         }
     }
 

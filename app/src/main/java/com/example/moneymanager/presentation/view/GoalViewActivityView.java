@@ -11,8 +11,7 @@ public interface GoalViewActivityView extends MvpView {
     void setTotalBalance(Double totalBalance);
     void setProgress(float progress);
     void setTitle(String title);
-
     void setSum(String s);
-
     void showNoValueMessage();
+    void startGoalActivityToConfigure(int goalId);
 }

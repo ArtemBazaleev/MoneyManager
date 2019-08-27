@@ -3,12 +3,13 @@ package com.example.moneymanager.ui;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +41,7 @@ public class GoalViewActivity extends MvpAppCompatActivity implements GoalViewAc
     @BindView(R.id.textView32) TextView title;
     @BindView(R.id.editText5) EditText sum;
     @BindView(R.id.button) ImageButton addBtn;
+    @BindView(R.id.button4) ImageView configure;
 
     @InjectPresenter
     GoalViewActivityPresenter presenter;
@@ -67,6 +69,7 @@ public class GoalViewActivity extends MvpAppCompatActivity implements GoalViewAc
     private void init(){
         sum.addTextChangedListener(sumListener);
         addBtn.setOnClickListener(v-> presenter.onAddBtnClicked());
+        configure.setOnClickListener(v->presenter.onSettingClicked());
     }
 
     @Override
@@ -105,6 +108,14 @@ public class GoalViewActivity extends MvpAppCompatActivity implements GoalViewAc
     @Override
     public void showNoValueMessage() {
         Toast.makeText(this, "Введите сумму", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void startGoalActivityToConfigure(int goalId) {
+        Intent i = new Intent(this, GoalActivity.class);
+        i.putExtra(GoalActivity.MODE, GoalActivity.MODE_CONFIGURE);
+        i.putExtra(GoalActivity.GOALID, goalId);
+        startActivity(i);
     }
 
     private TextWatcher sumListener = new TextWatcher() {

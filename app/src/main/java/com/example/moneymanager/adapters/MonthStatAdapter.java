@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.moneymanager.R;
 import com.example.moneymanager.model.AccountModel;
 import com.example.moneymanager.model.StatMonthModel;
+import com.example.moneymanager.utils.Utility;
 
 import java.util.List;
 
@@ -69,7 +70,14 @@ public class MonthStatAdapter extends RecyclerView.Adapter<MonthStatAdapter.View
         public void bind(StatMonthModel monthModel) {
             this.model = monthModel;
             monthName.setText(monthModel.getName());
-            value.setText(monthModel.getValue());
+            if (model.getType().equals(StatMonthModel.TYPE_INCOME)) {
+                value.setText(String.format("\u20BD +%s", Utility.formatDouble(monthModel.getValue())));
+                value.setBackground(mContext.getResources().getDrawable(R.drawable.bg_light_green_round));
+            }
+            else {
+                value.setText(String.format("\u20BD -%s", Utility.formatDouble(monthModel.getValue())));
+                value.setBackground(mContext.getResources().getDrawable(R.drawable.bg_light_red_round));
+            }
         }
     }
 

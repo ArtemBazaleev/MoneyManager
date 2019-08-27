@@ -16,6 +16,7 @@ public class DbCategory {
     public int categoryId;
     public String categoryName;
     public int isIncome;
+    public int position;
     @Embedded
     public DbIcon drawableIcon;
 
@@ -23,6 +24,13 @@ public class DbCategory {
         this.categoryName = categoryName;
         this.isIncome = isIncome;
         this.drawableIcon = drawableIcon;
+    }
+
+    public DbCategory(String categoryName, int isIncome, DbIcon drawableIcon, int position) {
+        this.categoryName = categoryName;
+        this.isIncome = isIncome;
+        this.drawableIcon = drawableIcon;
+        this.position = position;
     }
 
     public DbCategory() {

@@ -28,4 +28,6 @@ public interface EventActivityView extends MvpView {
     void setDateFragment(Long date);
 
     void stopSelf();
+
+    void startAddNewCategoryActivity(int isIncome);
 }

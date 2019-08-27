@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.example.moneymanager.adapters.CategoryAdapter;
 import com.example.moneymanager.interfaces.db.DataBaseTransactionContract;
 import com.example.moneymanager.interfaces.db.DbAccountInteraction;
 import com.example.moneymanager.interfaces.db.DbCategoryInteraction;
@@ -15,7 +16,10 @@ import com.example.moneymanager.model.dbModel.DbTransaction;
 import com.example.moneymanager.presentation.view.EventActivityView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import io.reactivex.Completable;
@@ -25,7 +29,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 @InjectViewState
-public class EventActivityPresenter extends MvpPresenter<EventActivityView> {
+public class EventActivityPresenter extends MvpPresenter<EventActivityView> implements
+        CategoryAdapter.IOnItemClicked {
     private static final int MODE_INCOME = 0;
     private static final int MODE_OUTCOME = 1;
     private String TAG = "EventActivityPresenter";
@@ -64,6 +69,7 @@ public class EventActivityPresenter extends MvpPresenter<EventActivityView> {
         Disposable d = accountInteraction.getAllAccounts()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .take(1)
                 .subscribe(accounts -> {
                     List<AccountModel> models = new ArrayList<>();
                     for (DbAccount i:accounts)
@@ -92,6 +98,7 @@ public class EventActivityPresenter extends MvpPresenter<EventActivityView> {
         Log.d(TAG, "requestOutcomeCategories: called");
         Disposable d = categoryInteraction.getAllOutComeCategories()
                 .subscribeOn(Schedulers.io())
+                .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(categories -> {
                     List<CategoryModel> models = new ArrayList<>();
@@ -108,7 +115,9 @@ public class EventActivityPresenter extends MvpPresenter<EventActivityView> {
         Disposable d = categoryInteraction.getAllInComeCategories()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .take(1)
                 .subscribe(categories -> {
+                    Collections.sort(categories, (category, t1) -> category.position - t1.position);
                     List<CategoryModel> models = new ArrayList<>();
                     for (DbCategory i:categories)
                         models.add(new CategoryModel(i));
@@ -118,10 +127,44 @@ public class EventActivityPresenter extends MvpPresenter<EventActivityView> {
                 }, Throwable::printStackTrace);
     }
 
+    @Override
     public void onCategoryClicked(CategoryModel categoryModel) {
         transaction.transactionCategoryID = categoryModel.getCategory();
         getViewState().hideBottomSheet();
         getViewState().onCategoryChosen(categoryModel,true);
+    }
+    @Override
+    public void onAddNewCategoryClicked(){
+        getViewState().startAddNewCategoryActivity(transaction.isIncome);
+    }
+
+    @Override
+    public void onPositionChanged(DbCategory oldPosition, DbCategory newPosition) {
+        int temp = oldPosition.position;
+        oldPosition.position = newPosition.position;
+        newPosition.position = temp;
+        List<DbCategory> update = new LinkedList<>();
+        update.add(oldPosition);
+        update.add(newPosition);
+        Completable.fromAction(() -> categoryInteraction
+                .updateCategory(update))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete: called!");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+                }); 
     }
 
     public void onAccountClicked(AccountModel accountModel) {

@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private void initFragments() {
         historyFragment = new HistoryFragment();
         goalFragment = new GoalFragment();
-        statisticsFragment = new StatisticsFragment();
+        statisticsFragment = new StatisticsFragmentContainer();
         currentFragment = historyFragment;
 
         fm.beginTransaction()

@@ -28,10 +28,13 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.disposables.Disposables;
 import io.reactivex.schedulers.Schedulers;
 
-public class BottomSheetCategoryFragment extends BottomSheetDialogFragment {
+public class BottomSheetCategoryFragment extends BottomSheetDialogFragment
+        implements CategoryAdapter.IOnItemClicked {
     public static final String MODE = "Mode";
     public static final String MODE_ALL = "All";
     public static final String MODE_INCOME = "InCome";
@@ -39,6 +42,8 @@ public class BottomSheetCategoryFragment extends BottomSheetDialogFragment {
     private App app;
 
     private String mode = MODE_ALL;
+
+    CompositeDisposable disposables = new CompositeDisposable();
 
     @BindView(R.id.recycler_account) RecyclerView recyclerView;
     @BindView(R.id.account) TextView textViewHeader;
@@ -92,16 +97,25 @@ public class BottomSheetCategoryFragment extends BottomSheetDialogFragment {
                 requestOutcomeCategories();
         }
     }
-
-    private void onCategoryClicked(CategoryModel categoryModel) {
+    @Override
+    public void onCategoryClicked(CategoryModel categoryModel) {
         Log.d("CATEGORYFRAGMENT", "onCategoryClicked: ");
+        disposables.dispose();
         if (mListener!=null)
             mListener.onCategoryClicked(categoryModel);
+        dismiss();
+    }
+    @Override
+    public void onAddNewCategoryClicked(){
+        disposables.dispose();
+        if (mListener!=null)
+            mListener.onAddNewCategoryClicked();
         dismiss();
     }
 
     public interface IOnCategoryModelClicked{
         void onCategoryClicked(CategoryModel model);
+        default void onAddNewCategoryClicked(){}
     }
 
     public BottomSheetCategoryFragment.IOnCategoryModelClicked getmListener() {
@@ -115,11 +129,12 @@ public class BottomSheetCategoryFragment extends BottomSheetDialogFragment {
 
     private void requestOutcomeCategories() {
         DbCategoryInteraction categoryInteraction = app.getDatabase().dbCategoryInteraction();
-        Disposable d = categoryInteraction.getAllOutComeCategories()
+        disposables.add(categoryInteraction.getAllOutComeCategories("Add new")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .take(1)
                 .subscribe(dbCategories -> {
-                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(), Utility.calculateNoOfColumns(getContext())));
+                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(), Utility.calculateNoOfColumns(Objects.requireNonNull(getContext()))));
                     List<CategoryModel> models = new LinkedList<>();
                     for (DbCategory i:dbCategories)
                         models.add(new CategoryModel(i));
@@ -128,42 +143,44 @@ public class BottomSheetCategoryFragment extends BottomSheetDialogFragment {
                     recyclerView.setAdapter(adapter);
                 }, throwable -> {
                     Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
-                });
+                }));
     }
 
     private void requestInComeCategories() {
         DbCategoryInteraction categoryInteraction = app.getDatabase().dbCategoryInteraction();
-        Disposable d = categoryInteraction.getAllInComeCategories()
+        disposables.add(categoryInteraction.getAllInComeCategories("Add new")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .take(1)
                 .subscribe(dbCategories -> {
-                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(), Utility.calculateNoOfColumns(getContext())));
+                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(), Utility.calculateNoOfColumns(Objects.requireNonNull(getContext()))));
                     List<CategoryModel> models = new LinkedList<>();
                     for (DbCategory i:dbCategories)
                         models.add(new CategoryModel(i));
                     adapter = new CategoryAdapter(models, getContext());
-                    adapter.setmListener(this::onCategoryClicked);
+                    adapter.setmListener(this);
                     recyclerView.setAdapter(adapter);
                 }, throwable -> {
                     Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
-                });
+                }));
     }
 
     private void requestAllCategories() {
         DbCategoryInteraction categoryInteraction = app.getDatabase().dbCategoryInteraction();
-        Disposable d = categoryInteraction.getAllCategories()
+        disposables.add(categoryInteraction.getAllCategories("Add new")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .take(1)
                 .subscribe(dbCategories -> {
-                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(), Utility.calculateNoOfColumns(getContext())));
+                    recyclerView.setLayoutManager(new GridLayoutManager(getContext(), Utility.calculateNoOfColumns(Objects.requireNonNull(getContext()))));
                     List<CategoryModel> models = new LinkedList<>();
                     for (DbCategory i:dbCategories)
                         models.add(new CategoryModel(i));
                     adapter = new CategoryAdapter(models, getContext());
-                    adapter.setmListener(this::onCategoryClicked);
+                    adapter.setmListener(this);
                     recyclerView.setAdapter(adapter);
                 }, throwable -> {
                     Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
-                });
+                }));
     }
 }

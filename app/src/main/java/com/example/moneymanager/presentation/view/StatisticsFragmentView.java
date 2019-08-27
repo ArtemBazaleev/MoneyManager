@@ -1,17 +1,23 @@
 package com.example.moneymanager.presentation.view;
 
 import com.arellomobile.mvp.MvpView;
-import com.example.moneymanager.model.CategoryModel;
+import com.example.moneymanager.model.CategoryStatModel;
 import com.example.moneymanager.model.StatMonthModel;
-import com.github.mikephil.charting.charts.BarChart;
+import com.example.moneymanager.model.StatPieChartModel;
+import com.hadiidbouk.charts.BarData;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
 public interface StatisticsFragmentView extends MvpView {
     void showDatePickerDialog();
-    void updateViewPager(List<CategoryModel> income, List<CategoryModel> outcome);
-    void updateBarChart(List<BarChart> charts);
-    void updateCategories(List<CategoryModel> categoryModels);
+    void updateViewPager(List<StatPieChartModel> mPieChartModels);
+    void updateBarChart(ArrayList<BarData> charts, float maxVal);
+    void updateCategories(List<CategoryStatModel> categoryModels);
     void updateMonthModel(List<StatMonthModel> monthModels);
     void updateAvailableYears(String[] years);
+    void updateDate(String from, String to);
+
+    void startMonthStatActivity(StatMonthModel name);
 }

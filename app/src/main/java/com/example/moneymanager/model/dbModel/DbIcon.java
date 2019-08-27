@@ -15,10 +15,12 @@ public class DbIcon {
     public int iconId;
     public String drawableIcon;
     public String iconName;
+    public String iconColorHex;
 
-    public DbIcon(String drawableIcon, String iconName) {
+    public DbIcon(String drawableIcon, String iconName, String iconColorHex) {
         this.drawableIcon = drawableIcon;
         this.iconName = iconName;
+        this.iconColorHex = iconColorHex;
     }
 
     public DbIcon() {

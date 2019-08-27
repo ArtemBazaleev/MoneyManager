@@ -5,6 +5,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -148,7 +149,7 @@ public class FilterActivity extends MvpAppCompatActivity implements FilterActivi
     @Override
     public void showCategories(String mode) {
         categoryFragment = BottomSheetCategoryFragment.newInstance(mode);
-        categoryFragment.setmListener(presenter::onCategoryClicked);
+        categoryFragment.setmListener(presenter);
         this.categoryFragment.show(getSupportFragmentManager(),"category");
     }
 
@@ -200,6 +201,14 @@ public class FilterActivity extends MvpAppCompatActivity implements FilterActivi
     @Override
     public void setOutcomeSelected() {
         radioGroup.check(R.id.radioButton2);
+    }
+
+    @Override
+    public void startAddCategoryActivity() {
+        Intent i = new Intent(this, CategoryAddActivity.class);
+        i.putExtra(CategoryAddActivity.MODE, CategoryAddActivity.MODE_CATEGORY);
+        i.putExtra(CategoryAddActivity.IS_INCOME, CategoryAddActivity.OUTCOME);
+        startActivity(i);
     }
 
     private RadioGroup.OnCheckedChangeListener checkedChangeListener = (radioGroup, i)->{

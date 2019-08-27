@@ -5,6 +5,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.RawQuery;
+import androidx.room.Update;
 import androidx.sqlite.db.SupportSQLiteQuery;
 import com.example.moneymanager.model.dbModel.DbTransaction;
 
@@ -29,5 +30,11 @@ public abstract class DataBaseTransactionContract {
 
     @Query("SELECT * FROM dbtransaction WHERE date>=:fromDate AND date <=:toDate")
     public abstract Flowable<List<DbTransaction>> getDataWithRange(Long fromDate, Long toDate);
+
+    @Query("SELECT * FROM dbtransaction WHERE date>=:fromDate AND date <=:toDate AND isIncome = :isincome")
+    public abstract Flowable<List<DbTransaction>> getDataWithRange(Long fromDate, Long toDate, int isincome);
+
+    @Update
+    public abstract void updateTransactions(List<DbTransaction> transactions);
 
 }

@@ -8,7 +8,7 @@
         android:title="События"  />
     <item
         android:id="@+id/navigation_goals"
-        android:icon="@drawable/ic_checked_box"
+        android:icon="@drawable/ic_goal"
         android:title="Цели" />
     <item
         android:id="@+id/navigation_main"

@@ -1,8 +1,6 @@
 package com.example.moneymanager.ui;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,15 +8,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
@@ -37,11 +31,6 @@ import com.example.moneymanager.utils.Utility;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
-import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
-
-import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -78,7 +67,13 @@ public class EventActivity extends MvpAppCompatActivity implements DatePickerDia
         ButterKnife.bind(this);
         init();
         hideKeyboard();
-        presenter.initBottomSheet();
+        presenter.initBottomSheet(); // TODO: 2019-08-22 init when onStartCalled
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //presenter.initBottomSheet();
     }
 
     //fake init
@@ -158,7 +153,7 @@ public class EventActivity extends MvpAppCompatActivity implements DatePickerDia
     public void loadCategories(List<CategoryModel> categoryModels) {
         recyclerView.setLayoutManager(new GridLayoutManager(this, Utility.calculateNoOfColumns(this)));
         CategoryAdapter adapter = new CategoryAdapter(categoryModels, this);
-        adapter.setmListener(presenter::onCategoryClicked);
+        adapter.setmListener(presenter);
         recyclerView.setAdapter(adapter);
         ItemTouchHelper.Callback callback =
                 new SimpleItemTouchHelperCallback(adapter);
@@ -238,5 +233,15 @@ public class EventActivity extends MvpAppCompatActivity implements DatePickerDia
     @Override
     public void stopSelf() {
         this.finish();
+    }
+
+    @Override
+    public void startAddNewCategoryActivity(int isIncome) {
+        Intent i = new Intent(this, CategoryAddActivity.class);
+        i.putExtra(CategoryAddActivity.MODE, CategoryAddActivity.MODE_CATEGORY);
+        if (isIncome == 1)
+            i.putExtra(CategoryAddActivity.IS_INCOME, CategoryAddActivity.INCOME);
+        else i.putExtra(CategoryAddActivity.IS_INCOME, CategoryAddActivity.OUTCOME);
+        startActivity(i);
     }
 }

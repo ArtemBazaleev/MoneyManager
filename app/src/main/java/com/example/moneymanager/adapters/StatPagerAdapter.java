@@ -2,6 +2,7 @@ package com.example.moneymanager.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,10 +48,8 @@ public class StatPagerAdapter extends PagerAdapter {
 
     private void initPieChart(PieChart pieChart, int position) {
         ArrayList<PieEntry> yEntries = new ArrayList<>();
-        ArrayList<String> xEntries = new ArrayList<>();
-        for (int i = 0; i < yData.length; i++) {
-            //xEntries.add(xDate[i]);
-            yEntries.add(new PieEntry(yData[i], i));
+        for (int i = 0; i < mData.get(position).getxData().length; i++) {
+            yEntries.add(new PieEntry((float) mData.get(position).getxData()[i], i));
         }
         PieDataSet dataset = new PieDataSet(yEntries,"Категории");
         dataset.setSliceSpace(1);
@@ -60,18 +59,9 @@ public class StatPagerAdapter extends PagerAdapter {
         dataset.setValueTextColor(Color.BLACK);
         //initColors
         ArrayList<Integer> colors = new ArrayList<>();
-        List<CategoryModel> models = new LinkedList<>();
-        colors.add(mContext.getResources().getColor(R.color.colorGradientStart));
-        models.add(new CategoryModel(mContext.getResources().getColor(R.color.colorGradientStart), "Автомобиль", Color.WHITE));
-        colors.add(mContext.getResources().getColor(R.color.colorGradientEnd));
-        models.add(new CategoryModel(mContext.getResources().getColor(R.color.colorGradientEnd), "Комунальные услуги",Color.WHITE));
-        colors.add(mContext.getResources().getColor(R.color.colorLightGray));
-        models.add(new CategoryModel(mContext.getResources().getColor(R.color.colorLightGray), "Питание",Color.BLACK));
-        colors.add(mContext.getResources().getColor(R.color.colorLightGreen));
-        models.add(new CategoryModel(mContext.getResources().getColor(R.color.colorLightGreen), "Дети",Color.BLACK));
-        colors.add(mContext.getResources().getColor(R.color.colorLightYellow));
-        models.add(new CategoryModel(mContext.getResources().getColor(R.color.colorLightYellow), "Животные",Color.BLACK));
-
+        for (String i:mData.get(position).getColors()) {
+            colors.add(Color.parseColor(i));
+        }
         dataset.setColors(colors);
 
         PieData data = new PieData(dataset);
@@ -94,5 +84,16 @@ public class StatPagerAdapter extends PagerAdapter {
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
+    }
+
+    public void updatePieChart(List<StatPieChartModel> mData){
+        this.mData = mData;
+        notifyDataSetChanged();
+        Log.d("StatPagerAdapter", "updatePieChart: Called");
+    }
+
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        return POSITION_NONE;
     }
 }

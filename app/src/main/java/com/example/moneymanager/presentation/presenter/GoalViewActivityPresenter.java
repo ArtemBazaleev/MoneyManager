@@ -21,6 +21,7 @@ import io.reactivex.schedulers.Schedulers;
 
 @InjectViewState
 public class GoalViewActivityPresenter extends MvpPresenter<GoalViewActivityView> {
+
     private DataBaseGoalContract goalContract;
     private DbGoalTransactionInteraction goalTransactions;
     private int goalID;
@@ -45,6 +46,7 @@ public class GoalViewActivityPresenter extends MvpPresenter<GoalViewActivityView
         Disposable d = goalContract.getGoalByID(goalID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .take(1)
                 .subscribe(goalModel -> {
                     goal = goalModel;
                     initView();
@@ -62,6 +64,7 @@ public class GoalViewActivityPresenter extends MvpPresenter<GoalViewActivityView
         Disposable d = goalTransactions.getTransactionForGoalID(goalID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .take(1)
                 .subscribe(dbGoalTransactions -> {
                     List<HistoryGoalModel > goalModels = new LinkedList<>();
                     for (DbGoalTransaction i:dbGoalTransactions)
@@ -136,5 +139,9 @@ public class GoalViewActivityPresenter extends MvpPresenter<GoalViewActivityView
                         e.printStackTrace();
                     }
                 });
+    }
+
+    public void onSettingClicked() {
+        getViewState().startGoalActivityToConfigure(goal.goalId);
     }
 }

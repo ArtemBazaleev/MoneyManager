@@ -16,12 +16,15 @@ import com.example.moneymanager.R;
 import com.example.moneymanager.interfaces.ItemTouchHelperAdapter;
 import com.example.moneymanager.model.AccountModel;
 import com.example.moneymanager.model.CategoryModel;
+import com.example.moneymanager.model.dbModel.DbCategory;
 import com.example.moneymanager.utils.Utility;
 
 import java.util.Collections;
 import java.util.List;
 
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> implements ItemTouchHelperAdapter {
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder>
+        implements ItemTouchHelperAdapter {
+
     private List<CategoryModel> mData;
     private Context mContext ;
     private IOnItemClicked mListener;
@@ -76,6 +79,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
                 Collections.swap(mData, i, i - 1);
             }
         }
+        Log.d("CategoryAdapter", "fromPosition:"+ fromPosition+" toPosition:"+toPosition);
+        if (mListener!=null)
+            mListener.onPositionChanged(mData.get(fromPosition).getCategory(), mData.get(toPosition).getCategory());
+        Log.d("\nCategoryAdapter", "fromPosition:"+ mData.get(fromPosition).getCategory().position + " toPosition:"+mData.get(toPosition).getCategory().position);
         notifyItemMoved(fromPosition, toPosition);
     }
 
@@ -103,8 +110,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         }
 
         private void onCardClicked(View view) {
-            if (mListener!=null)
-                mListener.onCategoryClicked(model);
+            if (mListener!=null) {
+                if (model.getCategory().categoryName.equals("Add new"))
+                    mListener.onAddNewCategoryClicked();
+                else mListener.onCategoryClicked(model);
+            }
         }
 
         public void bind(CategoryModel categoryModel) {
@@ -119,5 +129,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     public interface IOnItemClicked{
         void onCategoryClicked(CategoryModel model);
+
+        default void onAddNewCategoryClicked(){
+
+        }
+        default void onPositionChanged(DbCategory oldPosition, DbCategory newPosition){
+
+        }
     }
 }

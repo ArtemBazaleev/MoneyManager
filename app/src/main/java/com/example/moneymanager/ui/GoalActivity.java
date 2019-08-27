@@ -1,11 +1,11 @@
 package com.example.moneymanager.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,20 +18,25 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.example.moneymanager.App;
 import com.example.moneymanager.R;
 import com.example.moneymanager.custom.CustomIcon;
-import com.example.moneymanager.model.CategoryModel;
 import com.example.moneymanager.model.IconModel;
 import com.example.moneymanager.presentation.presenter.GoalActivityPresenter;
 import com.example.moneymanager.presentation.view.GoalActivityView;
 import com.example.moneymanager.utils.Utility;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
 public class GoalActivity extends MvpAppCompatActivity implements GoalActivityView {
+    public static final String MODE = "MODE";
+    public static final String MODE_NEW = "MODE_NEW";
+    public static final String MODE_CONFIGURE = "MODE_CONFIGURE";
+    public static final String GOALID = "goalID";
+
+    private String mode = MODE_NEW;
+    private int goalID ;
+
     @BindView(R.id.save_goal_btn) Button saveBtn;
     @BindView(R.id.chose_category_btn) TextView choseCategory;
     @BindView(R.id.title_goal) TextView title;
@@ -39,6 +44,7 @@ public class GoalActivity extends MvpAppCompatActivity implements GoalActivityVi
     @BindView(R.id.editText3) EditText goalName;
     @BindView(R.id.editText4) EditText goalNote;
     @BindView(R.id.editText6) EditText goalSum;
+    @BindView(R.id.imageView10) ImageView delBtn;
     private BottomSheetImageFragment category;
 
     @InjectPresenter
@@ -46,7 +52,11 @@ public class GoalActivity extends MvpAppCompatActivity implements GoalActivityVi
     @ProvidePresenter
     GoalActivityPresenter providePresenter(){
         App app = (App) getApplication();
-        return new GoalActivityPresenter(app.getDatabase().dataBaseGoalContract(),  app.getDatabase().dbIconInteraction());
+        return new GoalActivityPresenter(
+                app.getDatabase().dataBaseGoalContract(),
+                app.getDatabase().dbIconInteraction(),
+                app.getDatabase().dbGoalTransactionInteraction()
+        );
     }
 
 
@@ -55,7 +65,12 @@ public class GoalActivity extends MvpAppCompatActivity implements GoalActivityVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goal);
         ButterKnife.bind(this);
+        if (getIntent().getExtras()!= null){
+            mode = getIntent().getExtras().getString(MODE);
+            goalID = getIntent().getExtras().getInt(GOALID);
+        }
         init();
+        presenter.setMode(mode, goalID);
         presenter.onCreate();
     }
     private void init(){
@@ -63,37 +78,14 @@ public class GoalActivity extends MvpAppCompatActivity implements GoalActivityVi
         category = BottomSheetImageFragment.newInstance();
         category.setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.AppBottomSheetDialogTheme);
         category.setmListener(presenter::onIconChosen);
+        delBtn.setOnClickListener(v-> presenter.onDelBtnClicked());
         choseCategory.setOnClickListener(l-> presenter.onChoseIconClicked());
         initTextWatchers();
     }
 
     private void initTextWatchers() {
-        goalName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                presenter.onGoalNameChanged(charSequence.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) { }
-        });
-
-        goalNote.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                presenter.onGoalNoteChanged(charSequence.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) { }
-        });
-
+        goalName.addTextChangedListener(goalNameTextWatcher);
+        goalNote.addTextChangedListener(goalNoteTextWatcher);
         goalSum.addTextChangedListener(sumTextWatcher);
     }
 
@@ -110,9 +102,10 @@ public class GoalActivity extends MvpAppCompatActivity implements GoalActivityVi
     @Override
     public void setSum(String sum) {
         goalSum.removeTextChangedListener(sumTextWatcher);
-        goalSum.setText("");
+        goalSum.setText(sum);
         goalSum.addTextChangedListener(sumTextWatcher);
     }
+
 
     @Override
     public void stopSelf() {
@@ -129,6 +122,34 @@ public class GoalActivity extends MvpAppCompatActivity implements GoalActivityVi
         Toast.makeText(this, "Введите сумму", Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void setEnabledDelBtn(Boolean enabledDelBtn) {
+        if (enabledDelBtn)
+            delBtn.setVisibility(View.VISIBLE);
+        else delBtn.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setName(String name) {
+        goalName.removeTextChangedListener(goalNameTextWatcher);
+        goalName.setText(name);
+        goalName.addTextChangedListener(goalNameTextWatcher);
+    }
+
+    @Override
+    public void setNote(String note){
+        goalNote.removeTextChangedListener(goalNoteTextWatcher);
+        goalNote.setText(note);
+        goalNote.addTextChangedListener(goalNoteTextWatcher);
+    }
+
+    @Override
+    public void startMainActivityAndClearStack() {
+        Intent i = new Intent(this, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
+    }
+
     private TextWatcher sumTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
@@ -141,5 +162,31 @@ public class GoalActivity extends MvpAppCompatActivity implements GoalActivityVi
         @Override
         public void afterTextChanged(Editable s) {
         }
+    };
+
+    private TextWatcher goalNameTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            presenter.onGoalNameChanged(charSequence.toString());
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) { }
+    };
+
+    private TextWatcher goalNoteTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            presenter.onGoalNoteChanged(charSequence.toString());
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) { }
     };
 }

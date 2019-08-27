@@ -47,18 +47,6 @@ public class HistoryFragmentPresenter extends MvpPresenter<HistoryFragmentView> 
 
     private void requestFilterTransactions() {
         QueryConstructor queryConstructor = new QueryConstructor();
-//        Disposable d = Flowable.just(this.transactionContract.getTransactions(queryConstructor.buildQuery(filterModel)))
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(transactions -> {
-//                    Disposable d1 = Flowable.just(updateTransactions(transactions))
-//                            .observeOn(AndroidSchedulers.mainThread())
-//                            .subscribeOn(Schedulers.io())
-//                            .subscribe(historyModels -> {
-//                                getViewState().loadTransactions(historyModels);
-//                                calculateIncomeOutcome(historyModels);
-//                            }, Throwable::printStackTrace);
-//                },Throwable::printStackTrace);
 
         Disposable d = Flowable.fromCallable(() ->
                 transactionContract.getTransactions(queryConstructor.buildQuery(filterModel)))
@@ -79,7 +67,11 @@ public class HistoryFragmentPresenter extends MvpPresenter<HistoryFragmentView> 
     private void requestCurrentTransactions(){
         Calendar from = Calendar.getInstance();
         from.set(from.get(Calendar.YEAR), from.get(Calendar.MONTH), 1, 0, 0);
-        Disposable d = transactionContract.getDataWithRange(from.getTimeInMillis(), Calendar.getInstance().getTimeInMillis())
+        Calendar to = Calendar.getInstance();
+        to.set(Calendar.HOUR_OF_DAY, 23);
+        to.set(Calendar.MINUTE, 59);
+        to.set(Calendar.SECOND, 59);
+        Disposable d = transactionContract.getDataWithRange(from.getTime().getTime(), to.getTime().getTime())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(dbTransactions -> {
@@ -121,15 +113,19 @@ public class HistoryFragmentPresenter extends MvpPresenter<HistoryFragmentView> 
         getViewState().setOutCome(outcome);
     }
 
-    private List<HistoryModel> updateTransactions(List<DbTransaction> transaction) { // TODO: 2019-08-16 bug when first inited 
+    private List<HistoryModel> updateTransactions(List<DbTransaction> transaction) {
         double sum = 0.0;
         List<HistoryModel> historyModels = new ArrayList<>();
         List<HistoryModel> titles = new LinkedList<>();
-        if (transaction.size()==0)
+        if (transaction.size()==0) {
+            getViewState().setTotalBalance(0);
             return historyModels;
+        }
         else if (transaction.size()==1){
             HistoryModel title = new HistoryModel(HistoryModel.TYPE_TOTAL);
-            title.setSum(transaction.get(0).sum);
+            if (transaction.get(0).isIncome==1)
+                title.setSum(title.getSum() + transaction.get(0).sum);
+            else title.setSum(title.getSum() - transaction.get(0).sum);
             title.setDate(Utility.formatDateForHistoryTitle(transaction.get(0).date));
             historyModels.add(title);
             historyModels.add(new HistoryModel(transaction.get(0)));

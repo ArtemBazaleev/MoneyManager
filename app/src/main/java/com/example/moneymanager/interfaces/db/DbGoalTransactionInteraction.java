@@ -23,6 +23,9 @@ public interface DbGoalTransactionInteraction {
     @Delete
     void deleteGoalTransaction(DbGoalTransaction transaction);
 
+    @Query("DELETE FROM dbgoaltransaction WHERE goalId = :goalID")
+    void deleteGoalTransactions(int goalID);
+
     @Query("SELECT * FROM DbGoalTransaction WHERE goalTransactionDate >= :date")
     Flowable<List<DbGoalTransaction>> getTimeTransaction(long date);
 

@@ -33,4 +33,6 @@ public interface FilterActivityView extends MvpView {
     void setIncomeSelected();
 
     void setOutcomeSelected();
+
+    void startAddCategoryActivity();
 }

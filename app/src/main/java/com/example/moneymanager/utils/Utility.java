@@ -59,98 +59,105 @@ public class Utility {
         List<DbCategory> categories = new LinkedList<>();
         categories.add(
                 new DbCategory(
-                        "Food", 0,  iconInteraction.getIconByName("food")));
+                        "Food", 0,  iconInteraction.getIconByName("food"), 0));
         categories.add(
                 new DbCategory(
-                        "Transport", 0,  iconInteraction.getIconByName("transport")));
+                        "Transport", 0,  iconInteraction.getIconByName("transport"), 1));
         categories.add(
                 new DbCategory(
-                        "Bills", 0,  iconInteraction.getIconByName("bills")));
+                        "Bills", 0,  iconInteraction.getIconByName("bills"), 2));
         categories.add(
                 new DbCategory(
-                        "Car", 0,  iconInteraction.getIconByName("car")));
+                        "Car", 0,  iconInteraction.getIconByName("car"), 3));
         categories.add(
                 new DbCategory(
-                        "Shopping", 0,  iconInteraction.getIconByName("shopping")));
+                        "Shopping", 0,  iconInteraction.getIconByName("shopping"), 4));
         categories.add(
                 new DbCategory(
-                        "Clothing", 0,  iconInteraction.getIconByName("clothing")));
+                        "Clothing", 0,  iconInteraction.getIconByName("clothing"), 5));
         categories.add(
                 new DbCategory(
-                        "Health", 0,  iconInteraction.getIconByName("health")));
+                        "Health", 0,  iconInteraction.getIconByName("health"), 6));
         categories.add(
                 new DbCategory(
-                        "Sport", 0,  iconInteraction.getIconByName("sport")));
+                        "Sport", 0,  iconInteraction.getIconByName("sport"), 7));
         categories.add(
                 new DbCategory(
-                        "Baby", 0,  iconInteraction.getIconByName("baby")));
+                        "Baby", 0,  iconInteraction.getIconByName("baby"), 8));
         categories.add(
                 new DbCategory(
-                        "Fastfood", 0,  iconInteraction.getIconByName("fastfood")));
+                        "Fastfood", 0,  iconInteraction.getIconByName("fastfood"), 9));
         categories.add(
                 new DbCategory(
-                        "Gift", 0,  iconInteraction.getIconByName("gift")));
+                        "Gift", 0,  iconInteraction.getIconByName("gift"), 10));
         categories.add(
                 new DbCategory(
-                        "Travel", 0,  iconInteraction.getIconByName("travel")));
+                        "Travel", 0,  iconInteraction.getIconByName("travel"), 11));
         categories.add(
                 new DbCategory(
-                        "Education", 0,  iconInteraction.getIconByName("education")));
+                        "Education", 0,  iconInteraction.getIconByName("education"), 12));
         categories.add(
                 new DbCategory(
-                        "Book", 0,  iconInteraction.getIconByName("book")));
+                        "Book", 0,  iconInteraction.getIconByName("book"), 13));
         categories.add(
                 new DbCategory(
-                        "Tax", 0,  iconInteraction.getIconByName("tax")));
+                        "Tax", 0,  iconInteraction.getIconByName("tax"), 14));
         categories.add(
                 new DbCategory(
-                        "Phone", 0,  iconInteraction.getIconByName("phone")));
+                        "Phone", 0,  iconInteraction.getIconByName("phone"), 15));
         categories.add(
                 new DbCategory(
-                        "Insurance", 0,  iconInteraction.getIconByName("insurance")));
+                        "Insurance", 0,  iconInteraction.getIconByName("insurance"), 16));
         categories.add(
                 new DbCategory(
-                        "Salary", 1,  iconInteraction.getIconByName("salary")));
+                        "Salary", 1,  iconInteraction.getIconByName("salary"), 0));
         categories.add(
                 new DbCategory(
-                        "Business", 1,  iconInteraction.getIconByName("business")));
+                        "Business", 1,  iconInteraction.getIconByName("business"), 1));
+        categories.add(
+                new DbCategory(
+                        "Add new", 1,  iconInteraction.getIconByName("add"), 2));
+        categories.add(
+                new DbCategory(
+                        "Add new", 0,  iconInteraction.getIconByName("add"), 17));
         return categories;
     }
 
     public static List<DbIcon> getIcons(){ //тут добавить иконки
         List<DbIcon> icons = new LinkedList<>();
-        icons.add(new DbIcon("ic_car", "car"));
-        icons.add(new DbIcon("ic_coins", "coins"));
-        icons.add(new DbIcon("ic_transport", "transport"));
-        icons.add(new DbIcon("ic_travel", "travel"));
-        icons.add(new DbIcon("ic_baby", "baby"));
-        icons.add(new DbIcon("ic_beauty", "beauty"));
-        icons.add(new DbIcon("ic_book", "book"));
-        icons.add(new DbIcon("ic_carrot", "carrot"));
-        icons.add(new DbIcon("ic_cheers", "cheers"));
-        icons.add(new DbIcon("ic_clapperboard", "clapperboard"));
-        icons.add(new DbIcon("ic_clothing", "clothing"));
-        icons.add(new DbIcon("ic_education", "education"));
-        icons.add(new DbIcon("ic_fastfood", "fastfood"));
-        icons.add(new DbIcon("ic_fish", "fish"));
-        icons.add(new DbIcon("ic_food", "food"));
-        icons.add(new DbIcon("ic_gift", "gift"));
-        icons.add(new DbIcon("ic_grapes", "grapes"));
-        icons.add(new DbIcon("ic_health", "health"));
-        icons.add(new DbIcon("ic_insurance", "insurance"));
-        icons.add(new DbIcon("ic_pet", "pet"));
-        icons.add(new DbIcon("ic_phone", "phone"));
-        icons.add(new DbIcon("ic_pizza", "pizza"));
-        icons.add(new DbIcon("ic_shopping", "shopping"));
-        icons.add(new DbIcon("ic_sport", "sport"));
-        icons.add(new DbIcon("ic_taco", "taco"));
-        icons.add(new DbIcon("ic_tax", "tax"));
-        icons.add(new DbIcon("ic_bills", "bills"));
-        icons.add(new DbIcon("ic_cash", "cash"));
-        icons.add(new DbIcon("ic_credit_card", "creditCard"));
-        icons.add(new DbIcon("ic_debet_card", "debetCard"));
-        icons.add(new DbIcon("ic_salary", "salary"));
-        icons.add(new DbIcon("ic_business", "business"));
+        icons.add(new DbIcon("ic_car", "car", "#FFF59D"));
+        icons.add(new DbIcon("ic_coins", "coins","#C5E1A5"));
+        icons.add(new DbIcon("ic_transport", "transport","#EF9A9A"));
+        icons.add(new DbIcon("ic_travel", "travel","#90CAF9"));
+        icons.add(new DbIcon("ic_baby", "baby","#CE93D8"));
+        icons.add(new DbIcon("ic_beauty", "beauty","#B39DDB"));
+        icons.add(new DbIcon("ic_book", "book","#9FA8DA"));
+        icons.add(new DbIcon("ic_carrot", "carrot","#90CAF9"));
+        icons.add(new DbIcon("ic_cheers", "cheers","#81D4FA"));
+        icons.add(new DbIcon("ic_clapperboard", "clapperboard","#80DEEA"));
+        icons.add(new DbIcon("ic_clothing", "clothing","#B39DDB"));
+        icons.add(new DbIcon("ic_education", "education","#80CBC4"));
+        icons.add(new DbIcon("ic_fastfood", "fastfood","#A5D6A7"));
+        icons.add(new DbIcon("ic_fish", "fish","#E6EE9C"));
+        icons.add(new DbIcon("ic_food", "food","#FFE082"));
+        icons.add(new DbIcon("ic_gift", "gift","#FFCC80"));
+        icons.add(new DbIcon("ic_grapes", "grapes","#FFAB91"));
+        icons.add(new DbIcon("ic_health", "health","#E57373"));
+        icons.add(new DbIcon("ic_insurance", "insurance","#F06292"));
+        icons.add(new DbIcon("ic_pet", "pet","#BA68C8"));
+        icons.add(new DbIcon("ic_phone", "phone","#9575CD"));
+        icons.add(new DbIcon("ic_pizza", "pizza","#7986CB"));
+        icons.add(new DbIcon("ic_shopping", "shopping","#64B5F6"));
+        icons.add(new DbIcon("ic_sport", "sport","#64B5F6"));
+        icons.add(new DbIcon("ic_taco", "taco","#4FC3F7"));
+        icons.add(new DbIcon("ic_tax", "tax","#4DD0E1"));
+        icons.add(new DbIcon("ic_bills", "bills","#4DB6AC"));
+        icons.add(new DbIcon("ic_cash", "cash","#81C784"));
+        icons.add(new DbIcon("ic_credit_card", "creditCard","#EF5350"));
+        icons.add(new DbIcon("ic_debet_card", "debetCard","#EC407A"));
+        icons.add(new DbIcon("ic_salary", "salary","#00BCD4"));
+        icons.add(new DbIcon("ic_business", "business","#26A69A"));
+        icons.add(new DbIcon("ic_add_circle_outline_black_24dp", "add", "#BA68C8"));
         return icons;
     }
 

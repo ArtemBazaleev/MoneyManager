@@ -74,6 +74,10 @@ dependencies {
     //BarChart
     implementation 'com.github.hadiidbouk:ChartProgressBar-Android:2.0.6'
 
+    //JodaTime
+    implementation 'joda-time:joda-time:2.10.3'
+
+
     //Db ROOM
     implementation "android.arch.persistence.room:runtime:1.1.1"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"

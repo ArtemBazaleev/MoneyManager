@@ -23,4 +23,35 @@
     <color name="colorLightGreen">#C5E1A5</color>
     <color name="colorLightRed">#EF9A9A</color>
     <color name="colorLightBlue">#90CAF9</color>
+    <color name="colorLightPurple">#CE93D8</color>
+    <color name="colorLight4">#B39DDB</color>
+    <color name="colorLight5">#9FA8DA</color>
+    <color name="colorLight6">#90CAF9</color>
+    <color name="colorLight7">#81D4FA</color>
+    <color name="colorLight8">#80DEEA</color>
+    <color name="colorLight9">#B39DDB</color>
+    <color name="colorLight10">#80CBC4</color>
+    <color name="colorLight11">#A5D6A7</color>
+    <color name="colorLight12">#E6EE9C</color>
+    <color name="colorLight13">#FFE082</color>
+    <color name="colorLight14">#FFCC80</color>
+    <color name="colorLight15">#FFAB91</color>
+    <color name="colorLight16">#E57373</color>
+
+    <color name="colorLight17">#F06292</color>
+    <color name="colorLight18">#BA68C8</color>
+    <color name="colorLight19">#9575CD</color>
+    <color name="colorLight20">#7986CB</color>
+    <color name="colorLight21">#64B5F6</color>
+    <color name="colorLight22">#4FC3F7</color>
+    <color name="colorLight23">#4DD0E1</color>
+    <color name="colorLight24">#4DB6AC</color>
+    <color name="colorLight25">#81C784</color>
+
+    <color name="colorLight26">#EF5350</color>
+    <color name="colorLight27">#EC407A</color>
+    <color name="colorLight28">#AB47BC</color>
+    <color name="colorLight29">#26A69A</color>
+
+
 </resources>

@@ -5,6 +5,7 @@ import com.aminography.primecalendar.common.CalendarFactory;
 import com.aminography.primecalendar.common.CalendarType;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.example.moneymanager.adapters.CategoryAdapter;
 import com.example.moneymanager.interfaces.db.DbAccountInteraction;
 import com.example.moneymanager.interfaces.db.DbCategoryInteraction;
 import com.example.moneymanager.model.AccountModel;
@@ -23,7 +24,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 @InjectViewState
-public class FilterActivityPresenter extends MvpPresenter<FilterActivityView> {
+public class FilterActivityPresenter extends MvpPresenter<FilterActivityView> implements
+        BottomSheetCategoryFragment.IOnCategoryModelClicked {
     private FilterModel filter;
     private DbAccountInteraction accountInteraction;
     private DbCategoryInteraction categoryInteraction;
@@ -34,10 +36,15 @@ public class FilterActivityPresenter extends MvpPresenter<FilterActivityView> {
         filter = new FilterModel();
     }
 
+    @Override
     public void onCategoryClicked(CategoryModel category){
         filter.setCategory(category);
         getViewState().setEnabledCategory(true);
         getViewState().setCategory(category);
+    }
+    @Override
+    public void onAddNewCategoryClicked(){
+        getViewState().startAddCategoryActivity();
     }
 
     public void onAccountClicked(AccountModel account){
@@ -57,6 +64,7 @@ public class FilterActivityPresenter extends MvpPresenter<FilterActivityView> {
     private void loadAccountAndUpdateUi() {
         Disposable d = accountInteraction.getAllAccounts()
                 .subscribeOn(Schedulers.io())
+                .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(accounts -> {
                     List<AccountModel> models = new ArrayList<>();
@@ -97,6 +105,7 @@ public class FilterActivityPresenter extends MvpPresenter<FilterActivityView> {
         Disposable d = accountInteraction.getAllAccounts()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .take(1)
                 .subscribe(accounts -> {
                     List<AccountModel> models = new ArrayList<>();
                     for (DbAccount i:accounts)
