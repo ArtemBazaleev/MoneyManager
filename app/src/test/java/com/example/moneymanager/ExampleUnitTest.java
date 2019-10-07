@@ -17,6 +17,10 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
+        int s=1;
+        for (int i=0;i<2000000000; i++){
+            System.out.println("Raining  men");
+        }
 
     }
 }
